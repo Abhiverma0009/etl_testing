@@ -39,7 +39,54 @@ running it through the current `node.exe`:
 
 Install Node on the VM with its architecture-matched build (the normal MSI, or a
 portable zip extracted anywhere — installing Node itself is not blocked; only
-invoking tools via `.cmd` shims is). If the VM is 32-bit and `npm install` can't
-fetch a matching Next SWC binary, pin a Next version known to ship
-`@next/swc-win32-ia32-msvc`, or set the Babel fallback compiler. (Next 14 has
-historically shipped ia32 SWC prebuilds.)
+invoking tools via `.cmd` shims is).
+
+### 32-bit VM: SWC native binary failure (hit on the real client VM)
+
+On a 32-bit (`win32-ia32`) VM, `node server.js` failed with:
+
+```
+⚠ Attempted to load @next/swc-win32-ia32-msvc, but an error occurred: A dynamic
+link library (DLL) initialization routine failed.
+⨯ Failed to load SWC binary for win32/ia32
+```
+
+`npm` did install the matching native `@next/swc-win32-ia32-msvc` binary — it
+just failed to *load* as a Windows DLL (classically a missing/mismatched MSVC
+runtime). **That's not fixable here** — no admin rights on the client VM means
+no Visual C++ Redistributable install. So instead of chasing the VM's system
+libraries, the app is now configured to **never touch the native binary at
+all** on a platform like this. Two changes, both already in this repo:
+
+1. **`next.config.mjs`: `experimental.useWasmBinary: true`.** Read
+   `next/dist/build/swc/index.js` directly to confirm this: Next hard-lists
+   `"i686-pc-windows-msvc"` (32-bit Windows) in `knownDefaultWasmFallbackTriples`
+   — its own set of platforms it expects to need the WASM compiler. Combined
+   with `useWasmBinary: true`, Next tries the **WASM** compiler *first*, before
+   ever attempting the native binary — so the DLL that fails to load is never
+   touched, and Next's own runtime auto-downloader (which otherwise re-fetches
+   a missing native binary over HTTP and would hit the exact same crash) never
+   fires either. On a platform Next doesn't consider WASM-fallback-eligible
+   (this dev machine's x64), the flag is a documented no-op — Next logs a
+   notice and uses native as normal. **This is the fix that actually matters**;
+   verified end-to-end on the dev machine (page compiles and serves via the
+   same code path) since there's no 32-bit machine here to test on directly.
+2. **`package.json`: `next` pinned to `14.2.33`, with `@next/swc-wasm-nodejs`
+   pinned to the same version** so the WASM compiler is guaranteed present
+   (Next stopped publishing `@next/swc-wasm-nodejs` after `14.2.33`, so this
+   pin is required, not incidental). **`14.2.33` has a known CVE** (see
+   `https://nextjs.org/blog/security-update-2025-12-11`); accepted deliberately
+   because this app is **run only locally, never hosted** — that threat model
+   doesn't apply. If that ever changes (the app gets deployed/exposed), revisit
+   this pin and re-check whether a newer `next`/matching-`@next/swc-wasm-nodejs`
+   pair is available.
+3. **`.npmrc`: `omit=optional`.** Belt-and-suspenders: this stops `npm install`
+   from ever pulling *any* platform's native `@next/swc-*` binary in the first
+   place (they're all listed as `optionalDependencies` of `next` itself), so
+   there's nothing broken sitting in `node_modules` to begin with, on any
+   machine.
+
+**On the VM:** delete `node_modules`, run `node scripts/install.js`, then
+`node server.js` — no admin rights or system installs needed. First compile
+under WASM is noticeably slower than native (expect it, not a hang); page
+loads are otherwise unaffected.
