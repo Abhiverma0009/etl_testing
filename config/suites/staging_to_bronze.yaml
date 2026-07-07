@@ -1,0 +1,12 @@
+# HOP: STAGING -> BRONZE (Snowflake, same table names, different schema)
+scenario: medallion_data_migration
+connections: config/connections.yaml
+mapping: config/mappings/valdb_mapping.xlsx    # names identical across layers
+source: snowflake_staging
+target: snowflake_bronze
+
+options:
+  variance_threshold: 0.0001
+
+tests: [row_count, schema, datatype, completeness, deduplication,
+        null_handling, reconciliation]

@@ -1,0 +1,599 @@
+{
+  "source_file": "config/mappings/globalcredit_mapping.json",
+  "tables": [
+    {
+      "target_table": "VALUATION_DEAL_FUND_VALUED_ASSET",
+      "source_system": "Global Credit (CSP/CEMOF/CAP workbook)",
+      "source_object": "Fund Only Data Input / Fund with Coinvest Data Input",
+      "target_db": "VDB",
+      "target_schema": "GOLD",
+      "layer": "gold",
+      "load_type": "full",
+      "key_columns": [
+        "FUND",
+        "REPORTING_QUARTER",
+        "MDM_VALUED_ASSET_CODE",
+        "INVESTMENT_LEVEL"
+      ],
+      "active": true,
+      "options": {},
+      "columns": [
+        {
+          "target_table": "VALUATION_DEAL_FUND_VALUED_ASSET",
+          "target_column": "MDM_VALUED_ASSET_CODE",
+          "source_column": "MDM_VALUED_ASSET_CODE",
+          "source_datatype": "VARCHAR",
+          "target_datatype": "VARCHAR",
+          "nullable": false,
+          "transformation": null,
+          "default_value": null,
+          "compare": false,
+          "case_sensitive": false,
+          "numeric_tolerance": null,
+          "is_key": true
+        },
+        {
+          "target_table": "VALUATION_DEAL_FUND_VALUED_ASSET",
+          "target_column": "REPORTING_QUARTER",
+          "source_column": "REPORTING_QUARTER",
+          "source_datatype": "VARCHAR",
+          "target_datatype": "VARCHAR",
+          "nullable": false,
+          "transformation": null,
+          "default_value": null,
+          "compare": false,
+          "case_sensitive": false,
+          "numeric_tolerance": null,
+          "is_key": true
+        },
+        {
+          "target_table": "VALUATION_DEAL_FUND_VALUED_ASSET",
+          "target_column": "FUND",
+          "source_column": "FUND",
+          "source_datatype": "VARCHAR",
+          "target_datatype": "VARCHAR",
+          "nullable": false,
+          "transformation": null,
+          "default_value": null,
+          "compare": false,
+          "case_sensitive": false,
+          "numeric_tolerance": null,
+          "is_key": true
+        },
+        {
+          "target_table": "VALUATION_DEAL_FUND_VALUED_ASSET",
+          "target_column": "INVESTMENT_LEVEL",
+          "source_column": "INVESTMENT_LEVEL",
+          "source_datatype": "VARCHAR",
+          "target_datatype": "VARCHAR",
+          "nullable": false,
+          "transformation": null,
+          "default_value": null,
+          "compare": false,
+          "case_sensitive": false,
+          "numeric_tolerance": null,
+          "is_key": true
+        },
+        {
+          "target_table": "VALUATION_DEAL_FUND_VALUED_ASSET",
+          "target_column": "VALUED_ASSET_NAME",
+          "source_column": "VALUED_ASSET_NAME",
+          "source_datatype": "VARCHAR",
+          "target_datatype": "VARCHAR",
+          "nullable": false,
+          "transformation": null,
+          "default_value": null,
+          "compare": true,
+          "case_sensitive": false,
+          "numeric_tolerance": null,
+          "is_key": false
+        },
+        {
+          "target_table": "VALUATION_DEAL_FUND_VALUED_ASSET",
+          "target_column": "VENDOR_ID",
+          "source_column": "VENDOR_ID",
+          "source_datatype": "VARCHAR",
+          "target_datatype": "VARCHAR",
+          "nullable": false,
+          "transformation": null,
+          "default_value": null,
+          "compare": true,
+          "case_sensitive": false,
+          "numeric_tolerance": null,
+          "is_key": false
+        },
+        {
+          "target_table": "VALUATION_DEAL_FUND_VALUED_ASSET",
+          "target_column": "POSITION_NAME",
+          "source_column": "POSITION_NAME",
+          "source_datatype": "VARCHAR",
+          "target_datatype": "VARCHAR",
+          "nullable": true,
+          "transformation": null,
+          "default_value": null,
+          "compare": true,
+          "case_sensitive": false,
+          "numeric_tolerance": null,
+          "is_key": false
+        },
+        {
+          "target_table": "VALUATION_DEAL_FUND_VALUED_ASSET",
+          "target_column": "DEBT_EQUITY_FLAG",
+          "source_column": "DEBT_EQUITY_FLAG",
+          "source_datatype": "VARCHAR",
+          "target_datatype": "VARCHAR",
+          "nullable": false,
+          "transformation": null,
+          "default_value": null,
+          "compare": true,
+          "case_sensitive": false,
+          "numeric_tolerance": null,
+          "is_key": false
+        },
+        {
+          "target_table": "VALUATION_DEAL_FUND_VALUED_ASSET",
+          "target_column": "BLUEBOOK_REALIZATION_STATUS",
+          "source_column": "BLUEBOOK_REALIZATION_STATUS",
+          "source_datatype": "VARCHAR",
+          "target_datatype": "VARCHAR",
+          "nullable": true,
+          "transformation": null,
+          "default_value": null,
+          "compare": true,
+          "case_sensitive": false,
+          "numeric_tolerance": null,
+          "is_key": false
+        },
+        {
+          "target_table": "VALUATION_DEAL_FUND_VALUED_ASSET",
+          "target_column": "INVESTMENT_STATUS",
+          "source_column": "INVESTMENT_STATUS",
+          "source_datatype": "VARCHAR",
+          "target_datatype": "VARCHAR",
+          "nullable": true,
+          "transformation": null,
+          "default_value": null,
+          "compare": true,
+          "case_sensitive": false,
+          "numeric_tolerance": null,
+          "is_key": false
+        },
+        {
+          "target_table": "VALUATION_DEAL_FUND_VALUED_ASSET",
+          "target_column": "ROLLUP_INDICATOR",
+          "source_column": "ROLLUP_INDICATOR",
+          "source_datatype": "VARCHAR",
+          "target_datatype": "VARCHAR",
+          "nullable": true,
+          "transformation": null,
+          "default_value": null,
+          "compare": true,
+          "case_sensitive": false,
+          "numeric_tolerance": null,
+          "is_key": false
+        },
+        {
+          "target_table": "VALUATION_DEAL_FUND_VALUED_ASSET",
+          "target_column": "EQUITY_INVESTED",
+          "source_column": "EQUITY_INVESTED",
+          "source_datatype": "DECIMAL",
+          "target_datatype": "DECIMAL",
+          "nullable": false,
+          "transformation": null,
+          "default_value": null,
+          "compare": true,
+          "case_sensitive": false,
+          "numeric_tolerance": 0.01,
+          "is_key": false
+        },
+        {
+          "target_table": "VALUATION_DEAL_FUND_VALUED_ASSET",
+          "target_column": "CASH_RECEIVED",
+          "source_column": "CASH_RECEIVED",
+          "source_datatype": "DECIMAL",
+          "target_datatype": "DECIMAL",
+          "nullable": false,
+          "transformation": null,
+          "default_value": null,
+          "compare": true,
+          "case_sensitive": false,
+          "numeric_tolerance": 0.01,
+          "is_key": false
+        },
+        {
+          "target_table": "VALUATION_DEAL_FUND_VALUED_ASSET",
+          "target_column": "CURRENT_FMV",
+          "source_column": "CURRENT_FMV",
+          "source_datatype": "DECIMAL",
+          "target_datatype": "DECIMAL",
+          "nullable": false,
+          "transformation": null,
+          "default_value": null,
+          "compare": true,
+          "case_sensitive": false,
+          "numeric_tolerance": 0.01,
+          "is_key": false
+        },
+        {
+          "target_table": "VALUATION_DEAL_FUND_VALUED_ASSET",
+          "target_column": "TOTAL_VALUE",
+          "source_column": "TOTAL_VALUE",
+          "source_datatype": "DECIMAL",
+          "target_datatype": "DECIMAL",
+          "nullable": false,
+          "transformation": null,
+          "default_value": null,
+          "compare": true,
+          "case_sensitive": false,
+          "numeric_tolerance": 0.01,
+          "is_key": false
+        },
+        {
+          "target_table": "VALUATION_DEAL_FUND_VALUED_ASSET",
+          "target_column": "SOURCE_SYSTEM",
+          "source_column": "SOURCE_SYSTEM",
+          "source_datatype": "VARCHAR",
+          "target_datatype": "VARCHAR",
+          "nullable": true,
+          "transformation": null,
+          "default_value": null,
+          "compare": true,
+          "case_sensitive": false,
+          "numeric_tolerance": null,
+          "is_key": false
+        },
+        {
+          "target_table": "VALUATION_DEAL_FUND_VALUED_ASSET",
+          "target_column": "LOAD_TIMESTAMP",
+          "source_column": "LOAD_TIMESTAMP",
+          "source_datatype": "TIMESTAMP",
+          "target_datatype": "TIMESTAMP",
+          "nullable": true,
+          "transformation": null,
+          "default_value": null,
+          "compare": false,
+          "case_sensitive": false,
+          "numeric_tolerance": null,
+          "is_key": false
+        }
+      ]
+    },
+    {
+      "target_table": "VALUATION_DEAL_FUND",
+      "source_system": "Global Credit",
+      "source_object": "Fund",
+      "target_db": "VDB",
+      "target_schema": "GOLD",
+      "layer": "gold",
+      "load_type": "full",
+      "key_columns": [
+        "FUND",
+        "REPORTING_QUARTER"
+      ],
+      "active": true,
+      "options": {},
+      "columns": [
+        {
+          "target_table": "VALUATION_DEAL_FUND",
+          "target_column": "FUND",
+          "source_column": "FUND",
+          "source_datatype": "VARCHAR",
+          "target_datatype": "VARCHAR",
+          "nullable": false,
+          "transformation": null,
+          "default_value": null,
+          "compare": false,
+          "case_sensitive": false,
+          "numeric_tolerance": null,
+          "is_key": true
+        },
+        {
+          "target_table": "VALUATION_DEAL_FUND",
+          "target_column": "REPORTING_QUARTER",
+          "source_column": "REPORTING_QUARTER",
+          "source_datatype": "VARCHAR",
+          "target_datatype": "VARCHAR",
+          "nullable": false,
+          "transformation": null,
+          "default_value": null,
+          "compare": false,
+          "case_sensitive": false,
+          "numeric_tolerance": null,
+          "is_key": true
+        },
+        {
+          "target_table": "VALUATION_DEAL_FUND",
+          "target_column": "DEAL_NAME",
+          "source_column": "DEAL_NAME",
+          "source_datatype": "VARCHAR",
+          "target_datatype": "VARCHAR",
+          "nullable": true,
+          "transformation": null,
+          "default_value": null,
+          "compare": true,
+          "case_sensitive": false,
+          "numeric_tolerance": null,
+          "is_key": false
+        },
+        {
+          "target_table": "VALUATION_DEAL_FUND",
+          "target_column": "TOTAL_FMV",
+          "source_column": "TOTAL_FMV",
+          "source_datatype": "DECIMAL",
+          "target_datatype": "DECIMAL",
+          "nullable": true,
+          "transformation": null,
+          "default_value": null,
+          "compare": true,
+          "case_sensitive": false,
+          "numeric_tolerance": 0.01,
+          "is_key": false
+        }
+      ]
+    }
+  ],
+  "business_rules": [
+    {
+      "rule_id": "GC124",
+      "target_table": "VALUATION_DEAL_FUND_VALUED_ASSET",
+      "rule_type": "allowed_values",
+      "params": {
+        "column": "FUND",
+        "allowed_values": [
+          "CSP",
+          "CEMOF",
+          "CAP"
+        ]
+      },
+      "filter": null,
+      "severity": "P1",
+      "use_case": null,
+      "description": "Fund must be one of the supported Global Credit funds (rule 124/156)",
+      "active": true
+    },
+    {
+      "rule_id": "GC130",
+      "target_table": "VALUATION_DEAL_FUND_VALUED_ASSET",
+      "rule_type": "allowed_values",
+      "params": {
+        "column": "INVESTMENT_LEVEL",
+        "allowed_values": [
+          "MF",
+          "CO1"
+        ]
+      },
+      "filter": null,
+      "severity": "P1",
+      "use_case": null,
+      "description": "Investment Level must be MF (Fund Only) or CO1 (Fund with Coinvest) (rule 130/131)",
+      "active": true
+    },
+    {
+      "rule_id": "GC140",
+      "target_table": "VALUATION_DEAL_FUND_VALUED_ASSET",
+      "rule_type": "allowed_values",
+      "params": {
+        "column": "ROLLUP_INDICATOR",
+        "allowed_values": [
+          "Y",
+          "N"
+        ]
+      },
+      "filter": null,
+      "severity": "P3",
+      "use_case": null,
+      "description": "Roll-Up Indicator must be Y or N (rule 140)",
+      "active": true
+    },
+    {
+      "rule_id": "GC142",
+      "target_table": "VALUATION_DEAL_FUND_VALUED_ASSET",
+      "rule_type": "allowed_values",
+      "params": {
+        "column": "BLUEBOOK_REALIZATION_STATUS",
+        "allowed_values": [
+          "R",
+          "U",
+          "P"
+        ]
+      },
+      "filter": null,
+      "severity": "P2",
+      "use_case": null,
+      "description": "Bluebook Realization Status must be R/U/P (rule 142)",
+      "active": true
+    },
+    {
+      "rule_id": "GC141",
+      "target_table": "VALUATION_DEAL_FUND_VALUED_ASSET",
+      "rule_type": "allowed_values",
+      "params": {
+        "column": "INVESTMENT_STATUS",
+        "allowed_values": [
+          "Realized",
+          "Unrealized",
+          "Partially Realized"
+        ]
+      },
+      "filter": null,
+      "severity": "P2",
+      "use_case": null,
+      "description": "Investment Status must be Realized/Unrealized/Partially Realized (rule 141)",
+      "active": true
+    },
+    {
+      "rule_id": "GC145",
+      "target_table": "VALUATION_DEAL_FUND_VALUED_ASSET",
+      "rule_type": "allowed_values",
+      "params": {
+        "column": "DEBT_EQUITY_FLAG",
+        "allowed_values": [
+          "D",
+          "E"
+        ]
+      },
+      "filter": null,
+      "severity": "P2",
+      "use_case": null,
+      "description": "Debt/Equity Flag must be D (debt) or E (equity) (rule 144-146)",
+      "active": true
+    },
+    {
+      "rule_id": "GC143R",
+      "target_table": "VALUATION_DEAL_FUND_VALUED_ASSET",
+      "rule_type": "conditional",
+      "params": {
+        "when": "BLUEBOOK_REALIZATION_STATUS == 'R'",
+        "column": "INVESTMENT_STATUS",
+        "expected": "Realized"
+      },
+      "filter": null,
+      "severity": "P2",
+      "use_case": null,
+      "description": "Bluebook R must be consistent with Investment Status Realized (rule 143)",
+      "active": true
+    },
+    {
+      "rule_id": "GC143U",
+      "target_table": "VALUATION_DEAL_FUND_VALUED_ASSET",
+      "rule_type": "conditional",
+      "params": {
+        "when": "BLUEBOOK_REALIZATION_STATUS == 'U'",
+        "column": "INVESTMENT_STATUS",
+        "expected": "Unrealized"
+      },
+      "filter": null,
+      "severity": "P2",
+      "use_case": null,
+      "description": "Bluebook U must be consistent with Investment Status Unrealized (rule 143)",
+      "active": true
+    },
+    {
+      "rule_id": "GC164A",
+      "target_table": "VALUATION_DEAL_FUND_VALUED_ASSET",
+      "rule_type": "not_null",
+      "params": {
+        "column": "MDM_VALUED_ASSET_CODE"
+      },
+      "filter": null,
+      "severity": "P1",
+      "use_case": null,
+      "description": "Mandatory key: MDM Valued Asset Code not null (rule 164)",
+      "active": true
+    },
+    {
+      "rule_id": "GC164B",
+      "target_table": "VALUATION_DEAL_FUND_VALUED_ASSET",
+      "rule_type": "not_null",
+      "params": {
+        "column": "VALUED_ASSET_NAME"
+      },
+      "filter": null,
+      "severity": "P1",
+      "use_case": null,
+      "description": "Mandatory key: Valued Asset Name not null (rule 164)",
+      "active": true
+    },
+    {
+      "rule_id": "GC164C",
+      "target_table": "VALUATION_DEAL_FUND_VALUED_ASSET",
+      "rule_type": "not_null",
+      "params": {
+        "column": "DEBT_EQUITY_FLAG"
+      },
+      "filter": null,
+      "severity": "P1",
+      "use_case": null,
+      "description": "Mandatory key: Debt/Equity Flag not null (rule 164)",
+      "active": true
+    },
+    {
+      "rule_id": "GC153A",
+      "target_table": "VALUATION_DEAL_FUND_VALUED_ASSET",
+      "rule_type": "not_null",
+      "params": {
+        "column": "EQUITY_INVESTED"
+      },
+      "filter": null,
+      "severity": "P2",
+      "use_case": null,
+      "description": "Required financial field: Equity Invested not null (rule 153)",
+      "active": true
+    },
+    {
+      "rule_id": "GC153B",
+      "target_table": "VALUATION_DEAL_FUND_VALUED_ASSET",
+      "rule_type": "not_null",
+      "params": {
+        "column": "CURRENT_FMV"
+      },
+      "filter": null,
+      "severity": "P2",
+      "use_case": null,
+      "description": "Required financial field: Current FMV not null (rule 153)",
+      "active": true
+    },
+    {
+      "rule_id": "GC153C",
+      "target_table": "VALUATION_DEAL_FUND_VALUED_ASSET",
+      "rule_type": "not_null",
+      "params": {
+        "column": "TOTAL_VALUE"
+      },
+      "filter": null,
+      "severity": "P2",
+      "use_case": null,
+      "description": "Required financial field: Total Value not null (rule 153)",
+      "active": true
+    },
+    {
+      "rule_id": "GC135",
+      "target_table": "VALUATION_DEAL_FUND_VALUED_ASSET",
+      "rule_type": "not_null",
+      "params": {
+        "column": "VENDOR_ID"
+      },
+      "filter": null,
+      "severity": "P2",
+      "use_case": null,
+      "description": "Vendor ID uniquely identifies the investment record (rule 135/172)",
+      "active": true
+    },
+    {
+      "rule_id": "GC165",
+      "target_table": "VALUATION_DEAL_FUND_VALUED_ASSET",
+      "rule_type": "unique",
+      "params": {
+        "columns": [
+          "FUND",
+          "REPORTING_QUARTER",
+          "MDM_VALUED_ASSET_CODE",
+          "INVESTMENT_LEVEL"
+        ]
+      },
+      "filter": null,
+      "severity": "P1",
+      "use_case": null,
+      "description": "Duplicate prevention: Fund + Reporting Quarter + MDM Valued Asset Code + Investment Level unique (rule 165)",
+      "active": true
+    }
+  ],
+  "ref_integrity": [
+    {
+      "child_table": "VALUATION_DEAL_FUND_VALUED_ASSET",
+      "child_columns": [
+        "FUND",
+        "REPORTING_QUARTER"
+      ],
+      "parent_table": "VALUATION_DEAL_FUND",
+      "parent_columns": [
+        "FUND",
+        "REPORTING_QUARTER"
+      ],
+      "severity": "P2",
+      "description": "Valued asset must roll up to a Deal-Fund (rule 133/137)",
+      "active": true
+    }
+  ],
+  "warnings": []
+}

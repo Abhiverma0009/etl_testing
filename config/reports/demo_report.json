@@ -1,0 +1,25 @@
+{
+  "id": "demo_report",
+  "name": "Demo Report (offline)",
+  "type": "OTHER",
+  "actual_connection": "demo_target",
+  "expected_connection": "demo_target",
+  "tabs": [
+    {
+      "name": "Clean Tab (matches)",
+      "key_columns": ["DEAL_ID", "FUND_CODE", "PERIOD"],
+      "compare_columns": ["FMV", "CASH_RECEIVED"],
+      "measures": [{ "label": "Total FMV", "column": "FMV", "tolerance": 0.0001 }],
+      "actual": { "query": "SELECT DEAL_ID, FUND_CODE, PERIOD, FMV, CASH_RECEIVED FROM DEAL_FUND_VALUED_ASSET" },
+      "expected": { "query": "SELECT DEAL_ID, FUND_CODE, PERIOD, FMV, CASH_RECEIVED FROM DEAL_FUND_VALUED_ASSET" }
+    },
+    {
+      "name": "Broken Tab (seeded diff)",
+      "key_columns": ["DEAL_ID", "FUND_CODE", "PERIOD"],
+      "compare_columns": ["FMV", "CASH_RECEIVED"],
+      "measures": [{ "label": "Total FMV", "column": "FMV", "tolerance": 0.0001 }],
+      "actual": { "query": "SELECT DEAL_ID, FUND_CODE, PERIOD, FMV, CASH_RECEIVED FROM DEAL_FUND_VALUED_ASSET" },
+      "expected": { "query": "SELECT DEAL_ID, FUND_CODE, PERIOD, FMV, CASH_RECEIVED FROM DEAL_FUND_VALUED_ASSET WHERE FUND_CODE <> 'GPE_VIII'" }
+    }
+  ]
+}

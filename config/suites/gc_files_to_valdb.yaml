@@ -1,0 +1,31 @@
+# HOP: Global Credit Excel fund files -> 2 ValDB (Access) tables
+# Source = the 3 fund workbooks (only the 4-5 tabs we use); Target = ValDB.
+# The tab->table mapping is TBD from your sample files; placeholders below.
+
+scenario: medallion_data_migration
+connections: config/connections.yaml
+mapping: config/mappings/globalcredit_mapping.xlsx
+source: files_globalcredit
+target: access_valdb
+
+options:
+  variance_threshold: 0.0001
+
+tests: [row_count, schema, datatype, completeness, business_rules,
+        deduplication, null_handling, reconciliation]
+
+tables:
+  # Each ValDB target table names, via source_options, which workbook(s)+tab(s)
+  # feed it. `sheet` may be one tab or a list of tabs (unioned).
+  - name: VALDB_TABLE_1            # <-- real ValDB table name
+    options:
+      source_options:
+        path: "GC_*.xlsx"          # glob across the 3 fund files
+        sheet: [Holdings, Positions]   # <-- the tabs that feed this table
+      severity: P1
+  - name: VALDB_TABLE_2
+    options:
+      source_options:
+        path: "GC_*.xlsx"
+        sheet: [Cashflows, NAV]
+      severity: P1

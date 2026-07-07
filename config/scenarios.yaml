@@ -1,0 +1,14 @@
+# Test scenarios — the top level of QA planning. Each scenario groups multiple
+# test cases (suites in config/suites/*.yaml, tagged with `scenario: <id>`).
+# The app lists scenarios, shows their test cases, and can re-run every case in a
+# scenario at once (/scenarios). A suite with no `scenario:` shows as "Ungrouped".
+scenarios:
+  medallion_data_migration:
+    name: "Medallion Data Migration"
+    description: "Source-to-target data validation across every ValDB/GPE/GC/AlpInvest hop through Bronze/Silver/Gold."
+  gvc_mda_reports:
+    name: "GVC / MD&A Report Validation"
+    description: "Report-to-report validation (Phase 1 structure + Phase 2 data) for the GVC and MD&A workbooks."
+  data_quality:
+    name: "Data Quality"
+    description: "DQ checks over the curated Gold tables, with Teams alerting on failures."

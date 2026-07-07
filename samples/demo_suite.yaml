@@ -1,0 +1,35 @@
+# Offline demo suite. Generate data first:  python samples/build_demo.py
+connections: samples/demo_connections.yaml
+mapping: samples/demo_mapping.xlsx
+source: demo_source
+target: demo_target
+
+options:
+  variance_threshold: 0.0001        # 0.01%
+  lineage_columns: [SOURCE_SYSTEM, LOAD_TIMESTAMP]
+
+# Run all categories by default; comment out to scope.
+tests:
+  - row_count
+  - schema
+  - datatype
+  - completeness
+  - business_rules
+  - referential_integrity
+  - transformation
+  - deduplication
+  - null_handling
+  - reconciliation
+  - lineage
+
+tables:
+  - name: DEAL_FUND_VALUED_ASSET
+    options:
+      group_by: [FUND_CODE]
+      null_not_zero: [FMV]          # a null FMV must not become 0
+      completeness:
+        - column: PERIOD
+          expected_values: ["2026Q1"]
+  - name: FUND
+    options:
+      lineage_columns: []           # dimension table; not lineage-bearing

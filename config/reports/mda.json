@@ -1,0 +1,264 @@
+{
+  "id": "mda",
+  "name": "MD&A Reporting WB",
+  "type": "MDA",
+  "expected_connection": "access_valdb",
+  "actual_connection": "snowflake_gold",
+  "tabs": [
+    {
+      "name": "01 - Cover / Parameters",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for MD&A tab 01 (Cover / Parameters)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for MD&A tab 01 (Cover / Parameters)"
+      }
+    },
+    {
+      "name": "02 - Executive Summary",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for MD&A tab 02 (Executive Summary)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for MD&A tab 02 (Executive Summary)"
+      }
+    },
+    {
+      "name": "03 - Fund Overview",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for MD&A tab 03 (Fund Overview)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for MD&A tab 03 (Fund Overview)"
+      }
+    },
+    {
+      "name": "04 - Performance Highlights",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for MD&A tab 04 (Performance Highlights)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for MD&A tab 04 (Performance Highlights)"
+      }
+    },
+    {
+      "name": "05 - Portfolio Valuation",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for MD&A tab 05 (Portfolio Valuation)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for MD&A tab 05 (Portfolio Valuation)"
+      }
+    },
+    {
+      "name": "06 - Realizations",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for MD&A tab 06 (Realizations)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for MD&A tab 06 (Realizations)"
+      }
+    },
+    {
+      "name": "07 - New Deals",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for MD&A tab 07 (New Deals)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for MD&A tab 07 (New Deals)"
+      }
+    },
+    {
+      "name": "08 - Sector Commentary",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for MD&A tab 08 (Sector Commentary)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for MD&A tab 08 (Sector Commentary)"
+      }
+    },
+    {
+      "name": "09 - Geographic Commentary",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for MD&A tab 09 (Geographic Commentary)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for MD&A tab 09 (Geographic Commentary)"
+      }
+    },
+    {
+      "name": "10 - Public Positions",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for MD&A tab 10 (Public Positions)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for MD&A tab 10 (Public Positions)"
+      }
+    },
+    {
+      "name": "11 - Material Movements",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for MD&A tab 11 (Material Movements)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for MD&A tab 11 (Material Movements)"
+      }
+    },
+    {
+      "name": "12 - FX Commentary",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for MD&A tab 12 (FX Commentary)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for MD&A tab 12 (FX Commentary)"
+      }
+    },
+    {
+      "name": "13 - Debt Positions",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for MD&A tab 13 (Debt Positions)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for MD&A tab 13 (Debt Positions)"
+      }
+    },
+    {
+      "name": "14 - Coinvestments",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for MD&A tab 14 (Coinvestments)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for MD&A tab 14 (Coinvestments)"
+      }
+    },
+    {
+      "name": "15 - Risk Notes",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for MD&A tab 15 (Risk Notes)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for MD&A tab 15 (Risk Notes)"
+      }
+    },
+    {
+      "name": "16 - Reconciliation",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for MD&A tab 16 (Reconciliation)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for MD&A tab 16 (Reconciliation)"
+      }
+    },
+    {
+      "name": "17 - Exceptions",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for MD&A tab 17 (Exceptions)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for MD&A tab 17 (Exceptions)"
+      }
+    }
+  ]
+}

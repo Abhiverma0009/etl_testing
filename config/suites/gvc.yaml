@@ -1,0 +1,13 @@
+# GVC Reporting WB test — each of the 28 tabs compares the new Snowflake query
+# (ACTUAL) against the legacy Access ValDB query (EXPECTED). Fill each tab's two
+# queries in the app under Reports → GVC Reporting WB (query bodies are TODO
+# stubs until pasted from the GVC Reporting workbook).
+#
+#   etl-test run --suite config/suites/gvc.yaml
+scenario: gvc_mda_reports
+connections: config/connections.yaml
+target: snowflake_gold        # the ACTUAL side default (see config/reports/gvc.json)
+reports:
+  - gvc
+tests:
+  - report

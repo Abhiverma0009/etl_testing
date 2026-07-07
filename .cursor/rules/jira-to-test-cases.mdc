@@ -1,0 +1,178 @@
+---
+description: Draft test scenarios and test cases FROM Jira user stories / requirements for a source system feeding the ETL migration — the reverse of test-case-to-suite. Use whenever the user has Jira stories/requirements and wants QA test scenarios+cases drafted, before they're converted into runnable suites.
+globs: docs/jira/**,output/_drafted/**
+alwaysApply: false
+---
+
+# Jira story → draft test scenarios & test cases
+
+You draft **test scenarios and test cases** from Jira user stories / requirements
+for a source system (GPE/ILM, Global Credit, AlpInvest, ValDB, or a new one). This
+is the **reverse** of the `test-case-to-suite` rule: that one turns existing test
+cases into runnable config; this one turns **requirements** into a **draft**
+test-case document a QA engineer reviews — it does not write suite/mapping/report
+config itself, run tests, or query real data.
+
+**The pipeline:** Jira story → (you, this rule) → draft test-case Markdown → human
+review/edit → (`test-case-to-suite` rule) → `config/scenarios.yaml` +
+`config/suites/*.yaml`. If the user asks you to also convert your own draft in the
+same request, apply the `test-case-to-suite` rule to the file you just wrote.
+
+## Inputs needed from the user
+
+1. **The Jira story content itself** — one of:
+   - Pasted directly in chat (summary + description + acceptance criteria), or
+   - A single story saved as text/Markdown under `docs/jira/`, or
+   - A **Jira export** (Issue Navigator → Export → CSV or Excel, multiple stories at
+     once) saved anywhere — run the extractor first (same tool the other rule uses,
+     now CSV-aware):
+     ```
+     .\.venv\Scripts\python.exe scripts\extract_test_cases.py "<path to .csv/.xlsx export>"
+     ```
+     then read the resulting `output/_extracted/<name>.md`.
+2. **Which source system / connection(s) the story is about**, if not obvious from
+   the text (GPE/ILM, Global Credit, AlpInvest, ValDB, or "new source" — see below).
+3. Optional but helpful: which medallion hop (e.g. "files → Bronze", "Silver →
+   Gold") if the story is about a specific stage rather than end-to-end.
+
+If (2)/(3) aren't clear from the story, **ask** — don't guess the source system.
+
+## Ground yourself in what already exists before drafting
+
+Read the relevant `config/connections.yaml` entries and, if the source already has
+one, its `config/mappings/<name>.json` (tables/columns/business_rules already
+defined) — draft test cases that extend/complement what's there, not duplicates.
+
+**Real connection names (never invent others):** `demo_source` `demo_target`
+(offline SQLite) · `access_valdb` `access_valdb_prev` (legacy) · `gpe_views`
+`snowflake_staging` `snowflake_bronze` `snowflake_silver` `snowflake_gold`
+`snowflake_gold_prev` `snowflake_reporting` `snowflake_overrides` ·
+`files_globalcredit` `files_alpinvest`.
+
+**If the story is about a source system NOT in that list** (a genuinely new feed):
+draft the test cases anyway, but flag clearly at the top of the output: *"Source
+'X' has no connection defined in config/connections.yaml yet — add one before these
+cases can be converted/run."* Do not invent a connection name to make it look
+complete.
+
+## Vocabulary — draft in the SAME terms the other skill converts
+
+Every test case you draft must be phrased so `test-case-to-suite` can convert it
+mechanically later. Classify each case's intent against exactly these buckets (do
+not invent new ones):
+
+| Category (→ suite `tests:`) | Use for |
+|---|---|
+| `row_count` | record counts, per-group counts |
+| `schema` | column presence/structure |
+| `datatype` | type/format correctness |
+| `completeness` | mandatory fields, expected/forbidden values, missing periods |
+| `business_rules` | a specific rule (see rule types below) |
+| `referential_integrity` | FK / parent-child |
+| `transformation` | derived/renamed/FX columns |
+| `historical` | point-in-time / immutability |
+| `deduplication` | duplicate prevention |
+| `null_handling` | null vs default vs zero |
+| `reconciliation` | totals/variance within tolerance |
+| `lineage` | audit columns present & populated |
+| `incremental` | delta load correctness |
+| `cross_source` | consistency across two sources |
+| `report` | a GVC/MD&A report tab (Snowflake vs legacy Access query) |
+
+**Business-rule types** (`value_equals`, `allowed_values`, `not_allowed`,
+`conditional`, `not_null`, `range`, `unique`, `must_exist`, `must_not_exist`,
+`combine`, `split`, `valid_expr`) — when acceptance criteria imply a rule, phrase
+the test case using one of these types explicitly (e.g. "allowed_values: Fund ∈
+{CSP, CEMOF, CAP}"), not vague prose, so the conversion is unambiguous later.
+
+## Procedure
+
+1. **Read the story/stories** (paste, file, or extracted export).
+2. **Identify scope**: source system, hop(s), affected table(s)/column(s) — ask if
+   unclear rather than assuming.
+3. **Group into scenario(s).** One scenario per coherent piece of functionality the
+   story describes (often one scenario per story, or per acceptance-criteria
+   cluster if a story covers several). Name it for a human ("GC Currency & Dedup
+   Validation"), not the Jira key.
+4. **Draft test cases under each scenario** — for every acceptance criterion, and
+   proactively add the QA angles a story rarely spells out:
+   - the **happy path** (criterion holds),
+   - **negative/rejection** cases (criterion violated — what should fail/be logged),
+   - **boundary/edge cases** (empty value, duplicate, unsupported code, null vs
+     zero) where the domain implies them.
+   Classify each against the category table above; if a business rule, name the
+   `rule_type` + params explicitly.
+5. **Assign severity** from the story's language: "must/shall/reject" → P1/P2,
+   "should" → P3, cosmetic/nice-to-have → P4. Default P3 if truly unstated.
+6. **Mark assumptions.** Anything you inferred rather than read verbatim (a table
+   name, a column, a threshold) gets an `[ASSUMPTION]` tag inline and a line in the
+   "Assumptions & Open Questions" section — never state an inferred fact as if the
+   story said it.
+7. **Write the draft** to `output/_drafted/<slug>.md` (slug from the story key or a
+   short scenario name) using the schema below.
+8. **Tell the user what's next**: review/edit the draft, then ask to convert it
+   (the `test-case-to-suite` rule) once satisfied — or fix flagged gaps first.
+
+## Draft document schema (write exactly this shape)
+
+```markdown
+# Draft test cases: <Scenario/Story name> (<Jira key(s)>)
+
+## Assumptions & Open Questions
+- [ASSUMPTION] ...
+- [OPEN] ... (ask the user)
+
+## Scenario: <scenario name>
+<one-line description>
+
+| TC ID | Title | Source→Target (hop) | Category | Parameters | Expected Result | Severity |
+|---|---|---|---|---|---|---|
+| TC-001 | ... | files_globalcredit → snowflake_bronze | business_rules (allowed_values) | column=CURRENCY_TYPE, allowed=[EURM,USDM,CHFM,JPYM] | Records with unsupported currency are rejected & logged | P1 |
+```
+
+One row per test case. Keep `Category`/`Parameters` phrased in the vocabulary above
+so conversion later is mechanical, not interpretive.
+
+## Worked example
+
+**Jira story GC-101** — *"As a QA analyst, AlpInvest ingestion must reject records
+with unsupported currency codes and log them to an exception table."* (This maps to
+an already-partially-covered area — `config/mappings/alpinvest_mapping.json` has
+rule `AI098` for allowed currencies; extend, don't duplicate.)
+
+```markdown
+# Draft test cases: AlpInvest Currency & Exception Handling (GC-101)
+
+## Assumptions & Open Questions
+- [ASSUMPTION] Target table is VALUATION_ALPINVEST_STRATEGY (existing mapping).
+- [OPEN] Is there an actual queryable "exception table" to assert against, or is
+  rejection only visible as an absence in the target? Ask before converting —
+  affects whether this is `must_not_exist` (rows absent) or a real exception-table
+  check (needs a connection/table name).
+
+## Scenario: AlpInvest Currency & Exception Handling
+Validates unsupported-currency rejection and existing dedup/mandatory-key rules for
+the AlpInvest quarterly ingestion.
+
+| TC ID | Title | Source→Target (hop) | Category | Parameters | Expected Result | Severity |
+|---|---|---|---|---|---|---|
+| TC-101a | Unsupported currency rejected | files_alpinvest → snowflake_gold | business_rules (allowed_values) | column=CURRENCY_TYPE, allowed=[EURM,USDM,CHFM,JPYM] | No row with an unsupported currency exists in target | P1 |
+| TC-101b | Supported currencies all load | files_alpinvest → snowflake_gold | completeness | column=CURRENCY_TYPE, expected_values=[EURM,USDM,CHFM,JPYM] | Every loaded row has one of the 4 supported currencies | P2 |
+| TC-101c | Duplicate key prevention (existing rule 111) | files_alpinvest → snowflake_gold | business_rules (unique) | columns=[VALUATION_ID,REPORTING_QUARTER,STRATEGY_CATEGORY,CURRENCY_TYPE] | No duplicate combination loaded | P1 |
+```
+
+## Guardrails
+
+- **Never invent** connection, table, or column names not seen in the story or in
+  existing `config/`. Mark inferred ones `[ASSUMPTION]`.
+- **Never fabricate acceptance-criteria specifics** (a threshold, a code list) the
+  story didn't state — if a business rule needs a concrete value the story omits,
+  draft the test case with the check type named and the value marked `[OPEN]`.
+- **Don't duplicate existing coverage.** Check the target mapping's
+  `business_rules[]` first; extend or reference, don't re-draft an equivalent rule.
+- **This produces a draft, not config.** Never write to `config/suites/`,
+  `config/mappings/`, `config/reports/`, or `config/scenarios.yaml` from this rule
+  — only to `output/_drafted/`. Handing off to `test-case-to-suite` is a separate,
+  explicit step (may be the same chat turn, but a distinct action).
+- **One scenario grouping per coherent capability**, not one scenario per individual
+  test case.

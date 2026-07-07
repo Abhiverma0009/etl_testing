@@ -1,0 +1,11 @@
+# MD&A Reporting WB test — 17 tabs, new Snowflake query (ACTUAL) vs legacy Access
+# ValDB query (EXPECTED). Edit tab queries in the app under Reports → MD&A.
+#
+#   etl-test run --suite config/suites/mda.yaml
+scenario: gvc_mda_reports
+connections: config/connections.yaml
+target: snowflake_gold
+reports:
+  - mda
+tests:
+  - report

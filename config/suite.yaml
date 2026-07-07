@@ -1,0 +1,82 @@
+# Example production suite. Copy & adapt per source/migration wave.
+#
+#   etl-test run --suite config/suite.yaml
+#   etl-test run --suite config/suite.yaml --tests reconciliation,business_rules
+#   etl-test run --suite config/suite.yaml --table DEAL_FUND_VALUED_ASSET
+
+connections: config/connections.yaml
+mapping: config/mappings/valdb_mapping.xlsx   # your Excel mapping workbook
+
+source: access_valdb        # legacy source (the "before")
+target: snowflake_gold      # Snowflake EDP target (the "after")
+
+# Global options (overridable per table).
+options:
+  variance_threshold: 0.0001          # 0.01% reconciliation tolerance
+  numeric_tolerance: null             # absolute tolerance for value compares (optional)
+  schema_case_sensitive: false
+  lineage_columns: [SOURCE_SYSTEM, LOAD_TIMESTAMP, BATCH_ID]
+
+  # GVC report data-layer checks (Snowflake Gold vs the report's dataset).
+  gvc_reports:
+    - name: "GVC - Fund Performance (Section A)"
+      report:
+        connection: snowflake_gold
+        query: "SELECT FUND_CODE, PERIOD, NAV, IRR FROM RPT.GVC_FUND_PERFORMANCE"
+      gold:
+        connection: snowflake_gold
+        query: "SELECT FUND_CODE, PERIOD, SUM(NAV) AS NAV, AVG(IRR) AS IRR
+                 FROM GOLD.FUND_VALUATION GROUP BY FUND_CODE, PERIOD"
+      key_columns: [FUND_CODE, PERIOD]
+      compare_columns: [NAV, IRR]
+      measures:
+        - { label: "Total NAV", column: NAV, tolerance: 0.0001 }
+
+# Test categories to run (omit to run all 15).
+tests:
+  - row_count
+  - schema
+  - datatype
+  - completeness
+  - business_rules
+  - referential_integrity
+  - transformation
+  - historical
+  - deduplication
+  - null_handling
+  - reconciliation
+  - lineage
+  - incremental
+  - cross_source
+  - gvc_report
+
+# Per-table options. 'name' must match a target_table in the mapping workbook.
+tables:
+  - name: DEAL_FUND_VALUED_ASSET
+    options:
+      severity: P1
+      group_by: [FUND_CODE, PERIOD]       # per-group row counts
+      null_not_zero: [FMV]                # a null FMV must not become 0
+      completeness:
+        - column: PERIOD
+          expected_values: ["2026Q1", "2026Q2"]
+        - column: SOURCE_FILE
+          forbidden_values: ["CO2"]       # CO2 files must be excluded
+      # Historical immutability (needs a baseline snapshot connection):
+      # historical:
+      #   baseline: snowflake_gold_prev
+      #   period_column: PERIOD
+      #   current_period: "2026Q2"
+      #   expected_periods: ["2025Q4", "2026Q1", "2026Q2"]
+      # Incremental delta integrity:
+      # incremental:
+      #   baseline: snowflake_gold_prev
+      #   updatable_columns: [FMV, CASH_RECEIVED]
+      #   allow_deletes: false
+      # Cross-source consistency:
+      # cross_source:
+      #   second_source: sqlserver_legacy
+      #   object: dbo.DEALS
+      #   compare_columns: [FMV, PUBLIC_PRIVATE_FLAG]
+
+  - name: FUND

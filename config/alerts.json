@@ -1,0 +1,7 @@
+{
+  "enabled": false,
+  "on": ["FAIL", "ERROR", "P1"],
+  "channel": "teams",
+  "webhookEnv": "TEAMS_WEBHOOK_URL",
+  "suites": null
+}

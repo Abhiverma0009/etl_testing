@@ -1,0 +1,429 @@
+{
+  "id": "gvc",
+  "name": "GVC Reporting WB",
+  "type": "GVC",
+  "expected_connection": "access_valdb",
+  "actual_connection": "snowflake_gold",
+  "tabs": [
+    {
+      "name": "01 - Cover / Parameters",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for GVC tab 01 (Cover / Parameters)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for GVC tab 01 (Cover / Parameters)"
+      }
+    },
+    {
+      "name": "02 - Fund Summary",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for GVC tab 02 (Fund Summary)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for GVC tab 02 (Fund Summary)"
+      }
+    },
+    {
+      "name": "03 - Fund Performance",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for GVC tab 03 (Fund Performance)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for GVC tab 03 (Fund Performance)"
+      }
+    },
+    {
+      "name": "04 - Portfolio Company Detail",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for GVC tab 04 (Portfolio Company Detail)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for GVC tab 04 (Portfolio Company Detail)"
+      }
+    },
+    {
+      "name": "05 - Valuation Summary",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for GVC tab 05 (Valuation Summary)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for GVC tab 05 (Valuation Summary)"
+      }
+    },
+    {
+      "name": "06 - Realized/Unrealized Split",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for GVC tab 06 (Realized/Unrealized Split)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for GVC tab 06 (Realized/Unrealized Split)"
+      }
+    },
+    {
+      "name": "07 - Public vs Private",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for GVC tab 07 (Public vs Private)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for GVC tab 07 (Public vs Private)"
+      }
+    },
+    {
+      "name": "08 - Sector Exposure",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for GVC tab 08 (Sector Exposure)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for GVC tab 08 (Sector Exposure)"
+      }
+    },
+    {
+      "name": "09 - Geography Exposure",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for GVC tab 09 (Geography Exposure)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for GVC tab 09 (Geography Exposure)"
+      }
+    },
+    {
+      "name": "10 - Top Holdings",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for GVC tab 10 (Top Holdings)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for GVC tab 10 (Top Holdings)"
+      }
+    },
+    {
+      "name": "11 - Quarter-over-Quarter Bridge",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for GVC tab 11 (Quarter-over-Quarter Bridge)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for GVC tab 11 (Quarter-over-Quarter Bridge)"
+      }
+    },
+    {
+      "name": "12 - FX Impact",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for GVC tab 12 (FX Impact)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for GVC tab 12 (FX Impact)"
+      }
+    },
+    {
+      "name": "13 - Debt vs Equity",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for GVC tab 13 (Debt vs Equity)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for GVC tab 13 (Debt vs Equity)"
+      }
+    },
+    {
+      "name": "14 - Coinvest Summary",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for GVC tab 14 (Coinvest Summary)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for GVC tab 14 (Coinvest Summary)"
+      }
+    },
+    {
+      "name": "15 - Main Fund Summary",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for GVC tab 15 (Main Fund Summary)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for GVC tab 15 (Main Fund Summary)"
+      }
+    },
+    {
+      "name": "16 - New Investments",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for GVC tab 16 (New Investments)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for GVC tab 16 (New Investments)"
+      }
+    },
+    {
+      "name": "17 - Exits",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for GVC tab 17 (Exits)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for GVC tab 17 (Exits)"
+      }
+    },
+    {
+      "name": "18 - Write-ups/Write-downs",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for GVC tab 18 (Write-ups/Write-downs)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for GVC tab 18 (Write-ups/Write-downs)"
+      }
+    },
+    {
+      "name": "19 - Cost vs FMV",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for GVC tab 19 (Cost vs FMV)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for GVC tab 19 (Cost vs FMV)"
+      }
+    },
+    {
+      "name": "20 - MOIC by Fund",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for GVC tab 20 (MOIC by Fund)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for GVC tab 20 (MOIC by Fund)"
+      }
+    },
+    {
+      "name": "21 - IRR Summary",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for GVC tab 21 (IRR Summary)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for GVC tab 21 (IRR Summary)"
+      }
+    },
+    {
+      "name": "22 - Cash Flows",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for GVC tab 22 (Cash Flows)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for GVC tab 22 (Cash Flows)"
+      }
+    },
+    {
+      "name": "23 - Commitments",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for GVC tab 23 (Commitments)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for GVC tab 23 (Commitments)"
+      }
+    },
+    {
+      "name": "24 - NAV Rollforward",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for GVC tab 24 (NAV Rollforward)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for GVC tab 24 (NAV Rollforward)"
+      }
+    },
+    {
+      "name": "25 - Adjustments",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for GVC tab 25 (Adjustments)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for GVC tab 25 (Adjustments)"
+      }
+    },
+    {
+      "name": "26 - Reconciliation",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for GVC tab 26 (Reconciliation)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for GVC tab 26 (Reconciliation)"
+      }
+    },
+    {
+      "name": "27 - Exceptions",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for GVC tab 27 (Exceptions)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for GVC tab 27 (Exceptions)"
+      }
+    },
+    {
+      "name": "28 - Appendix",
+      "key_columns": [
+        "FUND_CODE",
+        "REPORTING_QUARTER"
+      ],
+      "compare_columns": [],
+      "measures": [],
+      "actual": {
+        "query": "-- TODO: Snowflake Gold query for GVC tab 28 (Appendix)"
+      },
+      "expected": {
+        "query": "-- TODO: legacy Access ValDB query for GVC tab 28 (Appendix)"
+      }
+    }
+  ]
+}

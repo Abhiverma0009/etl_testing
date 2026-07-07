@@ -1,0 +1,14 @@
+# HOP: Global Private Equity Snowflake VIEWS -> STAGING
+scenario: medallion_data_migration
+connections: config/connections.yaml
+mapping: config/mappings/gpe_mapping.xlsx
+source: gpe_views
+target: snowflake_staging
+
+options:
+  variance_threshold: 0.0001
+
+tests: [row_count, schema, datatype, completeness, referential_integrity,
+        transformation, deduplication, null_handling, reconciliation, lineage]
+
+# Runs all active tables in the mapping. Add per-table options as needed.

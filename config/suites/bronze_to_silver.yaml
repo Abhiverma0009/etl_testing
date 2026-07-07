@@ -1,0 +1,13 @@
+# HOP: BRONZE -> SILVER (cleansing/conforming layer; transformations expected)
+scenario: medallion_data_migration
+connections: config/connections.yaml
+mapping: config/mappings/valdb_mapping.xlsx
+source: snowflake_bronze
+target: snowflake_silver
+
+options:
+  variance_threshold: 0.0001
+
+tests: [row_count, schema, datatype, completeness, business_rules,
+        referential_integrity, transformation, deduplication,
+        null_handling, reconciliation]

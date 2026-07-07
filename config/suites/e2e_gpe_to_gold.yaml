@@ -1,0 +1,12 @@
+# HOP (END-TO-END): GPE Snowflake VIEWS -> GOLD. Sign-off reconciliation.
+scenario: medallion_data_migration
+connections: config/connections.yaml
+mapping: config/mappings/gpe_mapping.xlsx
+source: gpe_views
+target: snowflake_gold
+
+options:
+  variance_threshold: 0.0001
+
+tests: [row_count, business_rules, referential_integrity, transformation,
+        deduplication, null_handling, reconciliation]

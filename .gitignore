@@ -1,0 +1,35 @@
+# Secrets
+.env
+Testing Orchestrator App/.env.local
+
+# Generated output (dashboards, JSON results, evidence)
+output/
+
+# Portable toolchain (node) extracted locally — not committed
+.tools/
+
+# Next.js app build artifacts / deps
+Testing Orchestrator App/node_modules/
+Testing Orchestrator App/.next/
+Testing Orchestrator App/out/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+.pytest_cache/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+_archive/
+.claude/
+.pytest_cache/

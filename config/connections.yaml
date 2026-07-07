@@ -1,0 +1,132 @@
+# Named connections. Secrets come from environment variables (${VAR}) loaded from
+# a git-ignored .env (see .env.example). NEVER put real credentials in this file.
+#
+# Supported types: access, snowflake, sqlserver, files, sqlite.
+#
+# The migration is layered (medallion), so we define a Snowflake handle per layer
+# (they differ only by schema) plus the four sources. Each validation "hop" is a
+# suite with a source: + target: pointing at two of these.
+#
+#   Global Private Equity (GPE):  gpe_views -> snowflake_staging -> bronze -> silver -> gold
+#   Global Credit:  files_globalcredit (Excel tabs) -> access_valdb (2 tables)
+#                   -> snowflake_staging -> bronze -> silver -> gold
+#   AlpInvest:      files_alpinvest -> access_valdb -> ... -> gold
+#   ValDB itself:   access_valdb -> snowflake_staging -> ... -> gold  (historical + incremental)
+
+connections:
+
+  # ---- Offline demo (SQLite, no credentials) — a runnable example / smoke test ----
+  demo_source:
+    type: sqlite
+    path: samples/data/source.sqlite
+  demo_target:
+    type: sqlite
+    path: samples/data/target.sqlite
+
+  # ---- Snowflake medallion layers (same account, different schema) ----
+  gpe_views:                       # Source 1: GPE data already in Snowflake views
+    type: snowflake
+    account: ${SNOWFLAKE_ACCOUNT}
+    user: ${SNOWFLAKE_USER}
+    password: ${SNOWFLAKE_PASSWORD}
+    role: ${SNOWFLAKE_ROLE}
+    warehouse: ${SNOWFLAKE_WAREHOUSE}
+    database: ${SNOWFLAKE_DATABASE}
+    schema: GPE_VIEWS
+
+  snowflake_staging:
+    type: snowflake
+    account: ${SNOWFLAKE_ACCOUNT}
+    user: ${SNOWFLAKE_USER}
+    password: ${SNOWFLAKE_PASSWORD}
+    role: ${SNOWFLAKE_ROLE}
+    warehouse: ${SNOWFLAKE_WAREHOUSE}
+    database: ${SNOWFLAKE_DATABASE}
+    schema: STAGING
+
+  snowflake_bronze:
+    type: snowflake
+    account: ${SNOWFLAKE_ACCOUNT}
+    user: ${SNOWFLAKE_USER}
+    password: ${SNOWFLAKE_PASSWORD}
+    role: ${SNOWFLAKE_ROLE}
+    warehouse: ${SNOWFLAKE_WAREHOUSE}
+    database: ${SNOWFLAKE_DATABASE}
+    schema: BRONZE
+
+  snowflake_silver:
+    type: snowflake
+    account: ${SNOWFLAKE_ACCOUNT}
+    user: ${SNOWFLAKE_USER}
+    password: ${SNOWFLAKE_PASSWORD}
+    role: ${SNOWFLAKE_ROLE}
+    warehouse: ${SNOWFLAKE_WAREHOUSE}
+    database: ${SNOWFLAKE_DATABASE}
+    schema: SILVER
+
+  snowflake_gold:
+    type: snowflake
+    account: ${SNOWFLAKE_ACCOUNT}
+    user: ${SNOWFLAKE_USER}
+    password: ${SNOWFLAKE_PASSWORD}
+    role: ${SNOWFLAKE_ROLE}
+    warehouse: ${SNOWFLAKE_WAREHOUSE}
+    database: ${SNOWFLAKE_DATABASE}
+    schema: GOLD
+
+  # A baseline handle (a prior snapshot) for historical/incremental checks.
+  # Point it at a snapshot schema/clone taken before the current load.
+  snowflake_gold_prev:
+    type: snowflake
+    account: ${SNOWFLAKE_ACCOUNT}
+    user: ${SNOWFLAKE_USER}
+    password: ${SNOWFLAKE_PASSWORD}
+    role: ${SNOWFLAKE_ROLE}
+    warehouse: ${SNOWFLAKE_WAREHOUSE}
+    database: ${SNOWFLAKE_DATABASE}
+    schema: GOLD_PREV
+
+  # ---- Sigma Override reporting model (3 schemas: Production / Reporting / Data Overrides) ----
+  snowflake_reporting:              # curated reporting layer feeding GVC / MD&A
+    type: snowflake
+    account: ${SNOWFLAKE_ACCOUNT}
+    user: ${SNOWFLAKE_USER}
+    password: ${SNOWFLAKE_PASSWORD}
+    role: ${SNOWFLAKE_ROLE}
+    warehouse: ${SNOWFLAKE_WAREHOUSE}
+    database: ${SNOWFLAKE_DATABASE}
+    schema: REPORTING
+
+  snowflake_overrides:             # manual data-override schema (Sigma overrides)
+    type: snowflake
+    account: ${SNOWFLAKE_ACCOUNT}
+    user: ${SNOWFLAKE_USER}
+    password: ${SNOWFLAKE_PASSWORD}
+    role: ${SNOWFLAKE_ROLE}
+    warehouse: ${SNOWFLAKE_WAREHOUSE}
+    database: ${SNOWFLAKE_DATABASE}
+    schema: DATA_OVERRIDES
+
+  # ---- Source 4: MS Access (legacy Val DB) ----
+  access_valdb:
+    type: access
+    path: ${ACCESS_DB_PATH}
+    # password: ${ACCESS_DB_PASSWORD}
+
+  # A pre-load snapshot copy of ValDB for incremental checks (optional).
+  access_valdb_prev:
+    type: access
+    path: ${ACCESS_DB_PREV_PATH:-}
+
+  # ---- Source 2: Global Credit fund files (Excel, multi-tab) ----
+  files_globalcredit:
+    type: files
+    base_dir: ${GC_FEEDS_DIR}
+    # In a suite/mapping, a ValDB table's source references the files like:
+    #   source_object handled via table.options.source_dataset (see suite example),
+    #   e.g. path: "GC_*.xlsx", sheet: [Holdings, Cashflows, NAV, Positions]
+
+  # ---- Source 3: AlpInvest files ----
+  files_alpinvest:
+    type: files
+    base_dir: ${ALPINVEST_FEEDS_DIR}

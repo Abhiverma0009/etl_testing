@@ -1,0 +1,272 @@
+---
+description: Convert QA test cases (from Excel test matrices, Jira/Zephyr exports, markdown, or plain-English descriptions) into runnable config for the ETL Test Console — test scenarios (config/scenarios.yaml), suite YAML, business-rule JSON, and report-definition JSON. Use whenever the user asks to turn test cases / test scenarios / a test matrix into config the app can run.
+globs: config/scenarios.yaml,config/suites/*.yaml,config/mappings/*.json,config/reports/*.json
+alwaysApply: false
+---
+
+# Test case → test suite conversion
+
+You convert human-authored **test cases** into the three config artifacts this
+app actually runs. You do **not** run tests, edit Python, or invent data. A human
+reviews every artifact you produce before it becomes authoritative.
+
+The engine is deterministic (pandas + declared rules): a check passes or fails by
+comparing real data against config. Your job is to translate QA intent into that
+config *accurately* — a wrong option key silently produces a broken or no-op check.
+
+## Scenarios group test cases — set them up first
+
+QA authoring is two levels: a **test scenario** contains multiple **test cases**
+(a test case = one suite). When you convert a batch of test cases that belong to a
+scenario:
+
+1. **Ensure the scenario exists** in `config/scenarios.yaml` (create/append it):
+   ```yaml
+   scenarios:
+     <scenario_id>:
+       name: "Human name"
+       description: "one line"
+   ```
+2. **Tag every suite you generate** with `scenario: <scenario_id>` (top-level key in
+   the suite YAML). Untagged suites show as "Ungrouped" in the app.
+This lets the team see the cases grouped and re-run the whole scenario at once.
+
+## The 3 output artifacts (know which one a test case becomes)
+
+| Test-case intent | Goes into | Also requires |
+|---|---|---|
+| Structural / consistency check (counts, schema, types, completeness, dedup, nulls, reconciliation, lineage, FK, transformation, historical, incremental, cross-source) | a **suite** `config/suites/<hop>.yaml` — a category in `tests:` + per-table `options:` | — |
+| A specific business rule ("Fund must be CSP/CEMOF/CAP", "adjustment code = 27", "Nouryon must not exist") | the **mapping** `config/mappings/<name>.json` → append to `business_rules[]` | `business_rules` in the suite's `tests:` |
+| A GVC/MD&A report tab (new Snowflake query vs legacy Access query) | a **report** `config/reports/<id>.json` → add a `tabs[]` entry | `report` in `tests:` + the report id in the suite's `reports:[]` |
+
+## Input is often an Excel workbook — extract it to text first
+
+Raw `.xlsx` is binary; you cannot read it directly. If the user points you at an
+Excel file (or a folder of them), FIRST run the extractor, then read the Markdown
+it writes under `output/_extracted/`:
+
+```
+.\.venv\Scripts\python.exe scripts\extract_test_cases.py "<path to .xlsx or folder>"
+```
+
+It dumps every sheet to a faithful Markdown table (it does not interpret). Read
+those `.md` files, then proceed. Their sheet/column layout is the user's own — infer
+which columns are the scenario, the test-case id/title, the object under test, the
+check intent, and expected values. If the layout is unclear or the cases are written
+as free-form manual "steps," DON'T guess the mapping — summarize what you see and ask.
+
+## Procedure
+
+1. **Normalize each test case** into these fields (extract from prose if needed):
+   `id` · `title/description` · `object under test` (source→target tables) · `hop`
+   (which two connections) · `check intent` · `parameters` (columns, expected
+   values, tolerances, filters) · `expected result` · `severity` (P1–P4).
+2. **Classify intent** → pick the artifact + category using the tables below.
+3. **Group by hop.** All test cases sharing the same `source→target` collapse into
+   **one** suite file; each table's checks accumulate under one `tables[]` entry.
+   Do not create one suite per test case.
+4. **Emit** the artifact(s). Business rules append to the existing mapping's
+   `business_rules[]`; report tabs append to the report's `tabs[]`.
+5. **Verify** (see "Validation").
+6. **Report a conversion table** back to the user: TC id → artifact → file → any
+   assumptions/gaps you had to flag.
+
+## Real connection names (never invent others — must exist in config/connections.yaml)
+
+`demo_source` `demo_target` (offline SQLite) · `access_valdb` `access_valdb_prev`
+(legacy) · `gpe_views` `snowflake_staging` `snowflake_bronze` `snowflake_silver`
+`snowflake_gold` `snowflake_gold_prev` `snowflake_reporting` `snowflake_overrides`
+· `files_globalcredit` `files_alpinvest`. If a test case implies a connection not
+in this list, STOP and ask — do not guess.
+
+## Suite YAML schema (exact keys)
+
+```yaml
+connections: config/connections.yaml     # always this
+scenario: <scenario_id>                   # the scenario this test case belongs to
+mapping: config/mappings/<name>.json      # required unless reports-only
+source: <connection>                      # optional (some checks are target-only)
+target: <connection>                      # required
+options:                                  # suite-wide, override per table
+  variance_threshold: 0.0001              # reconciliation tolerance (0.01%)
+  numeric_tolerance: null                 # abs tolerance for value compares
+  schema_case_sensitive: false
+  lineage_columns: [SOURCE_SYSTEM, LOAD_TIMESTAMP]
+reports: [gvc, mda]                       # only if running report tabs
+tests:                                    # omit to run all; else list categories
+  - row_count
+tables:
+  - name: DEAL_FUND_VALUED_ASSET          # must match a target_table in the mapping
+    options:
+      severity: P1
+      group_by: [FUND_CODE, PERIOD]       # per-group row counts
+      null_not_zero: [FMV]                # a null source value must NOT become 0
+      target_where: "PERIOD = '2026Q1'"   # SQL filter on target (source_where too)
+      completeness:
+        - { column: PERIOD, expected_values: ["2026Q1", "2026Q2"] }
+        - { column: SOURCE_FILE, forbidden_values: ["CO2"] }
+      historical:
+        baseline: snowflake_gold_prev
+        period_column: PERIOD
+        current_period: "2026Q2"
+        expected_periods: ["2025Q4", "2026Q1", "2026Q2"]
+      incremental:
+        baseline: snowflake_gold_prev
+        updatable_columns: [FMV, CASH_RECEIVED]
+        allow_deletes: false
+      cross_source:
+        second_source: sqlserver_legacy
+        object: dbo.DEALS
+        key_columns: [DEAL_ID]
+        compare_columns: [FMV, PUBLIC_PRIVATE_FLAG]
+        rename: { SRC_FMV: FMV }
+```
+
+### Intent → category (structural checks live in the suite)
+
+| Test case says… | category | needs |
+|---|---|---|
+| "record/row counts match" | `row_count` | optional `group_by` for per-fund/period counts |
+| "target has all mapped columns / no extras" | `schema` | — (uses mapping) |
+| "data types/formats correct" | `datatype` | — (uses mapping) |
+| "mandatory fields populated / period present / value X excluded" | `completeness` | per-table `completeness:` list |
+| "FK/parent-child integrity" | `referential_integrity` | mapping's `ref_integrity[]` |
+| "derived/renamed/FX columns correct" | `transformation` | mapping columns w/ `transformation` or renamed `source_column` |
+| "history immutable / point-in-time" | `historical` | per-table `historical:` + a `*_prev` baseline conn |
+| "no duplicates" | `deduplication` | mapping key_columns |
+| "null stays null, not defaulted to 0" | `null_handling` | per-table `null_not_zero:` |
+| "totals reconcile within tolerance / <0.01% variance" | `reconciliation` | `variance_threshold` |
+| "audit/lineage columns present & populated" | `lineage` | `lineage_columns` (set `[]` per-table to opt a table OUT) |
+| "incremental/delta load correct" | `incremental` | per-table `incremental:` + baseline |
+| "consistent across two sources" | `cross_source` | per-table `cross_source:` |
+| "report tab matches legacy" | `report` | a report tab (below) |
+
+## Business-rule JSON (append to config/mappings/<name>.json → business_rules[])
+
+```json
+{
+  "rule_id": "BR###",
+  "target_table": "DEAL_FUND_VALUED_ASSET",
+  "rule_type": "allowed_values",
+  "params": { "column": "FUND", "allowed_values": ["CSP", "CEMOF", "CAP"] },
+  "filter": null,
+  "severity": "P1",
+  "use_case": "TC-012",
+  "description": "Fund must be a supported Global Credit fund",
+  "active": true
+}
+```
+
+`rule_type` primitives and their `params` (use ONLY these):
+
+| rule_type | params | fails when |
+|---|---|---|
+| `value_equals` | `column`, `expected` | any (filtered) row ≠ expected |
+| `allowed_values` | `column`, `allowed_values` (list) | a value is outside the set |
+| `not_allowed` | `column`, `allowed_values` (list) | a banned value appears |
+| `conditional` (alias `flag_override`) | `when` (pandas expr), `column`, `expected` | rows matching `when` where column ≠ expected |
+| `not_null` | `column` | any null in scope |
+| `range` | `column`, `min`, `max` | numeric outside [min, max] |
+| `unique` | `columns` (list) | duplicate combination |
+| `must_exist` | `min_count` (default 1); use `filter` to scope | fewer than min_count rows match |
+| `must_not_exist` | (use `filter` to scope) | any row matches |
+| `combine` | `group_by` (list), `expect_count` (default 1) | a group doesn't collapse to expect_count rows |
+| `split` | `group_by` (list), `type_column`, `expect_distinct` OR `min_count` | a group under-splits |
+| `valid_expr` | `valid_expr` (pandas boolean expr) | rows failing the expr |
+
+`filter` is an optional pandas `query()` string scoping the rule (e.g.
+`"LINE_TYPE == 'Debt'"`). Every column named MUST exist on the target table in the
+mapping. `rule_id` must be unique within the mapping.
+
+## Report tab JSON (append to config/reports/<id>.json → tabs[])
+
+Each tab runs in **two phases**: Phase 1 `Report structure` (column parity, required
+columns present, row-count parity) then Phase 2 `Report data` (row diff) + `Report
+measures`. A hard Phase-1 FAIL (a key/compare column missing on a side) gates Phase 2
+to SKIPPED. Optional per-tab controls: `row_count_gate` (`warn` default | `fail` |
+`off`), `row_count_tolerance` (int, default 0), `gate_on_structure` (default true),
+`structure_check` (default true).
+
+```json
+{
+  "name": "Q01 - Fund Performance",
+  "key_columns": ["FUND_CODE", "PERIOD"],
+  "compare_columns": ["NAV", "IRR"],
+  "measures": [{ "label": "Total NAV", "column": "NAV", "tolerance": 0.0001 }],
+  "row_count_gate": "warn",
+  "actual":   { "connection": "snowflake_gold", "query": "-- TODO: Snowflake SQL" },
+  "expected": { "connection": "access_valdb",   "query": "-- TODO: legacy Access SQL" }
+}
+```
+
+**Never fabricate report SQL.** If the test case doesn't supply both queries, emit
+the tab with `-- TODO` query bodies and flag it — the real SQL must come from the
+GVC/MD&A workbook (Access saved query → SQL View) and be human-reviewed. `actual`
+= new Snowflake side, `expected` = legacy Access side. Omit `connection` on a side
+to inherit the report's `actual_connection`/`expected_connection` default.
+
+## Worked examples
+
+**TC-001** "Row counts must match between ValDB and Gold for DEAL_FUND_VALUED_ASSET,
+broken out by fund." →
+```yaml
+# config/suites/valdb_to_gold_counts.yaml
+connections: config/connections.yaml
+mapping: config/mappings/valdb_mapping.json
+source: access_valdb
+target: snowflake_gold
+tests: [row_count]
+tables:
+  - name: DEAL_FUND_VALUED_ASSET
+    options: { group_by: [FUND_CODE], severity: P1 }
+```
+
+**TC-014** "Adjustment code must equal 27 for every deal record." → append to the
+mapping's `business_rules[]`:
+```json
+{ "rule_id": "BR014", "target_table": "DEAL_FUND_VALUED_ASSET",
+  "rule_type": "value_equals", "params": { "column": "ADJ_CODE", "expected": "27" },
+  "filter": null, "severity": "P1", "use_case": "TC-014",
+  "description": "Adjustment code must be 27 for all deal records", "active": true }
+```
+…and ensure `business_rules` is in that hop's suite `tests:`.
+
+**TC-022** "A null FMV in the source must never be loaded as 0." →
+```yaml
+tables:
+  - name: DEAL_FUND_VALUED_ASSET
+    options: { null_not_zero: [FMV], severity: P1 }
+```
+(category `null_handling` in `tests:`)
+
+**TC-030** "Nouryon (CP VII tiny record) must not appear in Gold." →
+```json
+{ "rule_id": "BR030", "target_table": "DEAL_FUND_VALUED_ASSET",
+  "rule_type": "must_not_exist", "params": {}, "filter": "COMPANY == 'Nouryon'",
+  "severity": "P1", "use_case": "TC-030",
+  "description": "CP VII Nouryon record must be fixed at source, not loaded",
+  "active": true }
+```
+
+## Guardrails
+
+- **Never invent** connection names, table names, or column names. Tables must
+  match a `target_table` in the referenced mapping; columns must exist on it. If a
+  test case names something not in the mapping, flag it as a gap — don't emit a
+  check that will error.
+- **Never fabricate SQL** for report tabs (leave `-- TODO`, flag it).
+- **Severity**: map P1=showstopper/critical, P2=critical, P3=major, P4=medium.
+  Default to the test case's stated priority; if none, P3 (P1 for reconciliation
+  and mandatory-key rules).
+- **Ambiguous test cases** (unclear which table, hop, or check type) → do NOT
+  guess. List them separately and ask.
+- **One hop = one suite.** Merge; don't proliferate files.
+- Preserve existing content when appending to a mapping or report file — never
+  overwrite the array.
+
+## Validation (after emitting)
+
+- Suite parses: `.\.venv\Scripts\python.exe -c "from etl_test.config_loader import load_suite; load_suite('config/suites/<f>.yaml')"`
+- Mapping loads: `.\.venv\Scripts\python.exe -c "from etl_test.mapping import load_mapping; b=load_mapping('config/mappings/<f>.json'); print(len(b.business_rules),'rules', b.warnings)"`
+- Dry categories: `.\.venv\Scripts\python.exe -m etl_test.cli run --suite config/suites/<f>.yaml --tests <category>` (needs the target connection reachable), or run it from the app's **/runs/new**.
+- Report/suite also show up in the app under **/reports** and **/suites** for a human to review before sign-off.

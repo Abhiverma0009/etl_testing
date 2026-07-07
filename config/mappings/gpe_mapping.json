@@ -1,0 +1,82 @@
+{
+  "source_file": "config\\mappings\\gpe_mapping.xlsx",
+  "tables": [
+    {
+      "target_table": "TARGET_TABLE",
+      "source_system": "EXAMPLE (delete this row)",
+      "source_object": "SRC_TABLE_OR_VIEW",
+      "target_db": null,
+      "target_schema": null,
+      "layer": "gold",
+      "load_type": "full",
+      "key_columns": [
+        "KEY_COL_1",
+        "KEY_COL_2"
+      ],
+      "active": true,
+      "options": {},
+      "columns": [
+        {
+          "target_table": "TARGET_TABLE",
+          "target_column": "KEY_COL_1",
+          "source_column": "KEY_COL_1",
+          "source_datatype": "VARCHAR",
+          "target_datatype": "VARCHAR",
+          "nullable": false,
+          "transformation": null,
+          "default_value": null,
+          "compare": false,
+          "case_sensitive": false,
+          "numeric_tolerance": null,
+          "is_key": true
+        },
+        {
+          "target_table": "TARGET_TABLE",
+          "target_column": "FMV",
+          "source_column": "FMV",
+          "source_datatype": "DECIMAL",
+          "target_datatype": "DECIMAL",
+          "nullable": true,
+          "transformation": null,
+          "default_value": null,
+          "compare": true,
+          "case_sensitive": false,
+          "numeric_tolerance": 0.01,
+          "is_key": false
+        }
+      ]
+    }
+  ],
+  "business_rules": [
+    {
+      "rule_id": "BR001",
+      "target_table": "TARGET_TABLE",
+      "rule_type": "value_equals",
+      "params": {
+        "column": "ADJ_CODE",
+        "expected": "27"
+      },
+      "filter": null,
+      "severity": "P1",
+      "use_case": "UC1",
+      "description": "EXAMPLE rule \u2014 adjustment code must be 27 (edit/delete)",
+      "active": true
+    }
+  ],
+  "ref_integrity": [
+    {
+      "child_table": "TARGET_TABLE",
+      "child_columns": [
+        "FUND_CODE"
+      ],
+      "parent_table": "FUND",
+      "parent_columns": [
+        "FUND_CODE"
+      ],
+      "severity": "P2",
+      "description": "EXAMPLE FK (edit/delete)",
+      "active": true
+    }
+  ],
+  "warnings": []
+}

@@ -1,0 +1,48 @@
+# Manual smoke test against a REAL Snowflake account. Same source + mapping as
+# the offline demo (samples/demo_suite.yaml); only the target changes from the
+# demo_target SQLite file to a real Snowflake connection, so this proves the
+# whole pipeline (network, driver, auth, comparison) against a live account.
+#
+# Setup:
+#   1. Fill SNOWFLAKE_* in the repo-root .env (see .env.example).
+#   2. In Snowflake, create ETL_TEST_DB.GOLD with DEAL_FUND_VALUED_ASSET + FUND
+#      tables loaded with the same rows as samples/data/target.sqlite (see the
+#      CREATE TABLE / INSERT statements given alongside this suite).
+#   3. python samples/build_demo.py   (builds demo_source.sqlite + the mapping)
+#   4. etl-test run --suite config/suites/snowflake_live_test.yaml
+#      (or trigger it from /runs/new in the app)
+scenario: medallion_data_migration
+connections: config/connections.yaml
+mapping: samples/demo_mapping.xlsx
+
+source: demo_source        # unchanged: the seeded-defect legacy side (SQLite)
+target: snowflake_gold     # now points at YOUR real Snowflake trial account
+
+options:
+  variance_threshold: 0.0001
+  lineage_columns: [SOURCE_SYSTEM, LOAD_TIMESTAMP]
+
+tests:
+  - row_count
+  - schema
+  - datatype
+  - completeness
+  - business_rules
+  - referential_integrity
+  - transformation
+  - deduplication
+  - null_handling
+  - reconciliation
+  - lineage
+
+tables:
+  - name: DEAL_FUND_VALUED_ASSET
+    options:
+      group_by: [FUND_CODE]
+      null_not_zero: [FMV]
+      completeness:
+        - column: PERIOD
+          expected_values: ["2026Q1"]
+  - name: FUND
+    options:
+      lineage_columns: []

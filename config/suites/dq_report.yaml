@@ -1,0 +1,24 @@
+# Data Quality (DQ) suite — runs the DQ-relevant validators over the curated Gold
+# tables and, when alerting is enabled (config/alerts.json), posts failures to a
+# Teams channel via Power Automate. This is the suite the DQ report is built on.
+#
+#   etl-test run --suite config/suites/dq_report.yaml
+scenario: data_quality
+connections: config/connections.yaml
+mapping: config/mappings/globalcredit_mapping.json
+source: files_globalcredit          # legacy feed (optional; validators skip if unused)
+target: snowflake_gold              # curated Gold layer under test
+
+options:
+  variance_threshold: 0.0001
+  # Surface reject/exception-table counts alongside the checks (rules 115/167).
+
+# DQ focuses on correctness/completeness of the loaded data, not the medallion
+# hops themselves. Keys, mandatory fields, allowed values, dedup, reconciliation.
+tests:
+  - completeness
+  - null_handling
+  - business_rules
+  - referential_integrity
+  - deduplication
+  - reconciliation

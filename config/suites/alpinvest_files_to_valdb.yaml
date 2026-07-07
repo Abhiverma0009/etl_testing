@@ -1,0 +1,19 @@
+# HOP: AlpInvest files -> ValDB (Access)
+scenario: medallion_data_migration
+connections: config/connections.yaml
+mapping: config/mappings/valdb_mapping.xlsx     # or a dedicated alpinvest_mapping.xlsx
+source: files_alpinvest
+target: access_valdb
+
+options:
+  variance_threshold: 0.0001
+
+tests: [row_count, schema, datatype, completeness, business_rules,
+        deduplication, null_handling, reconciliation]
+
+tables:
+  - name: VALDB_ALPINVEST_TABLE            # <-- real ValDB table name
+    options:
+      source_options:
+        path: "ALPINVEST_*.csv"            # or *.xlsx with sheet: [...]
+      severity: P1

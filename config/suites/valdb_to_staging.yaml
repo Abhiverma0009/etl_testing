@@ -1,0 +1,14 @@
+# HOP: ValDB (Access) -> STAGING (Snowflake)
+scenario: medallion_data_migration
+connections: config/connections.yaml
+mapping: config/mappings/valdb_mapping.xlsx
+source: access_valdb
+target: snowflake_staging
+
+options:
+  variance_threshold: 0.0001
+  lineage_columns: [SOURCE_SYSTEM, LOAD_TIMESTAMP]
+
+tests: [row_count, schema, datatype, completeness, business_rules,
+        referential_integrity, transformation, deduplication,
+        null_handling, reconciliation, lineage]

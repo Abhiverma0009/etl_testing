@@ -1,0 +1,14 @@
+# HOP (END-TO-END): ValDB (Access) -> GOLD (Snowflake). Sign-off reconciliation
+# that skips the intermediate layers. Source-of-truth = legacy Access.
+scenario: medallion_data_migration
+connections: config/connections.yaml
+mapping: config/mappings/valdb_mapping.xlsx
+source: access_valdb
+target: snowflake_gold
+
+options:
+  variance_threshold: 0.0001         # 0.01% programme threshold
+  lineage_columns: [SOURCE_SYSTEM, LOAD_TIMESTAMP]
+
+tests: [row_count, business_rules, referential_integrity, transformation,
+        deduplication, null_handling, reconciliation]

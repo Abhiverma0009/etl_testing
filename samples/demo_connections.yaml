@@ -1,0 +1,9 @@
+# Offline demo connections (SQLite stand-ins for Access source & Snowflake target).
+connections:
+  demo_source:
+    type: sqlite
+    path: samples/data/source.sqlite
+
+  demo_target:
+    type: sqlite
+    path: samples/data/target.sqlite

@@ -1,0 +1,305 @@
+{
+  "source_file": "config/mappings/alpinvest_mapping.json",
+  "tables": [
+    {
+      "target_table": "VALUATION_ALPINVEST_STRATEGY",
+      "source_system": "AlpInvest (quarterly valuation spreadsheet)",
+      "source_object": "Alpinvest_Valuation.xlsx",
+      "target_db": "VDB",
+      "target_schema": "GOLD",
+      "layer": "gold",
+      "load_type": "full",
+      "key_columns": [
+        "VALUATION_ID",
+        "REPORTING_QUARTER",
+        "STRATEGY_CATEGORY",
+        "CURRENCY_TYPE"
+      ],
+      "active": true,
+      "options": {},
+      "columns": [
+        {
+          "target_table": "VALUATION_ALPINVEST_STRATEGY",
+          "target_column": "VALUATION_ID",
+          "source_column": "VALUATION_ID",
+          "source_datatype": "VARCHAR",
+          "target_datatype": "VARCHAR",
+          "nullable": false,
+          "transformation": null,
+          "default_value": null,
+          "compare": false,
+          "case_sensitive": false,
+          "numeric_tolerance": null,
+          "is_key": true
+        },
+        {
+          "target_table": "VALUATION_ALPINVEST_STRATEGY",
+          "target_column": "REPORTING_QUARTER",
+          "source_column": "REPORTING_QUARTER",
+          "source_datatype": "VARCHAR",
+          "target_datatype": "VARCHAR",
+          "nullable": false,
+          "transformation": null,
+          "default_value": null,
+          "compare": false,
+          "case_sensitive": false,
+          "numeric_tolerance": null,
+          "is_key": true
+        },
+        {
+          "target_table": "VALUATION_ALPINVEST_STRATEGY",
+          "target_column": "LEGAL_ENTITY",
+          "source_column": "LEGAL_ENTITY",
+          "source_datatype": "VARCHAR",
+          "target_datatype": "VARCHAR",
+          "nullable": false,
+          "transformation": null,
+          "default_value": null,
+          "compare": true,
+          "case_sensitive": false,
+          "numeric_tolerance": null,
+          "is_key": false
+        },
+        {
+          "target_table": "VALUATION_ALPINVEST_STRATEGY",
+          "target_column": "STRATEGY_CATEGORY",
+          "source_column": "STRATEGY_CATEGORY",
+          "source_datatype": "VARCHAR",
+          "target_datatype": "VARCHAR",
+          "nullable": false,
+          "transformation": null,
+          "default_value": null,
+          "compare": true,
+          "case_sensitive": false,
+          "numeric_tolerance": null,
+          "is_key": true
+        },
+        {
+          "target_table": "VALUATION_ALPINVEST_STRATEGY",
+          "target_column": "CURRENCY_TYPE",
+          "source_column": "CURRENCY_TYPE",
+          "source_datatype": "VARCHAR",
+          "target_datatype": "VARCHAR",
+          "nullable": false,
+          "transformation": null,
+          "default_value": null,
+          "compare": true,
+          "case_sensitive": false,
+          "numeric_tolerance": null,
+          "is_key": true
+        },
+        {
+          "target_table": "VALUATION_ALPINVEST_STRATEGY",
+          "target_column": "OPENING_FMV",
+          "source_column": "OPENING_FMV",
+          "source_datatype": "DECIMAL",
+          "target_datatype": "DECIMAL",
+          "nullable": true,
+          "transformation": null,
+          "default_value": null,
+          "compare": true,
+          "case_sensitive": false,
+          "numeric_tolerance": 0.01,
+          "is_key": false
+        },
+        {
+          "target_table": "VALUATION_ALPINVEST_STRATEGY",
+          "target_column": "QUARTER_END_FMV",
+          "source_column": "QUARTER_END_FMV",
+          "source_datatype": "DECIMAL",
+          "target_datatype": "DECIMAL",
+          "nullable": false,
+          "transformation": null,
+          "default_value": null,
+          "compare": true,
+          "case_sensitive": false,
+          "numeric_tolerance": 0.01,
+          "is_key": false
+        },
+        {
+          "target_table": "VALUATION_ALPINVEST_STRATEGY",
+          "target_column": "OPENING_EQUITY_INVESTED",
+          "source_column": "OPENING_EQUITY_INVESTED",
+          "source_datatype": "DECIMAL",
+          "target_datatype": "DECIMAL",
+          "nullable": true,
+          "transformation": null,
+          "default_value": null,
+          "compare": true,
+          "case_sensitive": false,
+          "numeric_tolerance": 0.01,
+          "is_key": false
+        },
+        {
+          "target_table": "VALUATION_ALPINVEST_STRATEGY",
+          "target_column": "CLOSING_EQUITY_INVESTED",
+          "source_column": "CLOSING_EQUITY_INVESTED",
+          "source_datatype": "DECIMAL",
+          "target_datatype": "DECIMAL",
+          "nullable": true,
+          "transformation": null,
+          "default_value": null,
+          "compare": true,
+          "case_sensitive": false,
+          "numeric_tolerance": 0.01,
+          "is_key": false
+        },
+        {
+          "target_table": "VALUATION_ALPINVEST_STRATEGY",
+          "target_column": "CLOSING_REALIZED_PROCEEDS",
+          "source_column": "CLOSING_REALIZED_PROCEEDS",
+          "source_datatype": "DECIMAL",
+          "target_datatype": "DECIMAL",
+          "nullable": true,
+          "transformation": null,
+          "default_value": null,
+          "compare": true,
+          "case_sensitive": false,
+          "numeric_tolerance": 0.01,
+          "is_key": false
+        },
+        {
+          "target_table": "VALUATION_ALPINVEST_STRATEGY",
+          "target_column": "AUM_PERCENTAGE",
+          "source_column": "AUM_PERCENTAGE",
+          "source_datatype": "DECIMAL",
+          "target_datatype": "DECIMAL",
+          "nullable": true,
+          "transformation": null,
+          "default_value": null,
+          "compare": true,
+          "case_sensitive": false,
+          "numeric_tolerance": 0.0001,
+          "is_key": false
+        },
+        {
+          "target_table": "VALUATION_ALPINVEST_STRATEGY",
+          "target_column": "SOURCE_FILE_NAME",
+          "source_column": "SOURCE_FILE_NAME",
+          "source_datatype": "VARCHAR",
+          "target_datatype": "VARCHAR",
+          "nullable": true,
+          "transformation": null,
+          "default_value": null,
+          "compare": true,
+          "case_sensitive": false,
+          "numeric_tolerance": null,
+          "is_key": false
+        },
+        {
+          "target_table": "VALUATION_ALPINVEST_STRATEGY",
+          "target_column": "LOAD_TIMESTAMP",
+          "source_column": "LOAD_TIMESTAMP",
+          "source_datatype": "TIMESTAMP",
+          "target_datatype": "TIMESTAMP",
+          "nullable": true,
+          "transformation": null,
+          "default_value": null,
+          "compare": false,
+          "case_sensitive": false,
+          "numeric_tolerance": null,
+          "is_key": false
+        }
+      ]
+    }
+  ],
+  "business_rules": [
+    {
+      "rule_id": "AI094",
+      "target_table": "VALUATION_ALPINVEST_STRATEGY",
+      "rule_type": "allowed_values",
+      "params": {
+        "column": "STRATEGY_CATEGORY",
+        "allowed_values": [
+          "Fund",
+          "Secondary",
+          "Mezzanine",
+          "Co-Investment"
+        ]
+      },
+      "filter": null,
+      "severity": "P2",
+      "use_case": null,
+      "description": "Legal Entity strategy category must be Fund/Secondary/Mezzanine/Co-Investment (rule 94)",
+      "active": true
+    },
+    {
+      "rule_id": "AI098",
+      "target_table": "VALUATION_ALPINVEST_STRATEGY",
+      "rule_type": "allowed_values",
+      "params": {
+        "column": "CURRENCY_TYPE",
+        "allowed_values": [
+          "EURM",
+          "USDM",
+          "CHFM",
+          "JPYM"
+        ]
+      },
+      "filter": null,
+      "severity": "P2",
+      "use_case": null,
+      "description": "Reporting currency must be EURM/USDM/CHFM/JPYM; others rejected (rule 98/99)",
+      "active": true
+    },
+    {
+      "rule_id": "AI113A",
+      "target_table": "VALUATION_ALPINVEST_STRATEGY",
+      "rule_type": "not_null",
+      "params": {
+        "column": "VALUATION_ID"
+      },
+      "filter": null,
+      "severity": "P1",
+      "use_case": null,
+      "description": "Mandatory business key: Valuation ID not null (rule 113)",
+      "active": true
+    },
+    {
+      "rule_id": "AI113B",
+      "target_table": "VALUATION_ALPINVEST_STRATEGY",
+      "rule_type": "not_null",
+      "params": {
+        "column": "LEGAL_ENTITY"
+      },
+      "filter": null,
+      "severity": "P1",
+      "use_case": null,
+      "description": "Mandatory business key: Legal Entity not null (rule 113)",
+      "active": true
+    },
+    {
+      "rule_id": "AI092",
+      "target_table": "VALUATION_ALPINVEST_STRATEGY",
+      "rule_type": "not_null",
+      "params": {
+        "column": "QUARTER_END_FMV"
+      },
+      "filter": null,
+      "severity": "P2",
+      "use_case": null,
+      "description": "Required valuation field: Quarter-End FMV not null (rule 88/92)",
+      "active": true
+    },
+    {
+      "rule_id": "AI111",
+      "target_table": "VALUATION_ALPINVEST_STRATEGY",
+      "rule_type": "unique",
+      "params": {
+        "columns": [
+          "VALUATION_ID",
+          "REPORTING_QUARTER",
+          "STRATEGY_CATEGORY",
+          "CURRENCY_TYPE"
+        ]
+      },
+      "filter": null,
+      "severity": "P1",
+      "use_case": null,
+      "description": "Duplicate prevention: Valuation ID + Reporting Quarter + Strategy + Currency unique (rule 111)",
+      "active": true
+    }
+  ],
+  "ref_integrity": [],
+  "warnings": []
+}

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-16"?>
+<!--
+  Windows Task Scheduler definition for the ETL report-validation run.
+  Import with (native schtasks.exe — no .cmd shim, works on the locked-down VM):
+
+    schtasks /Create /TN "ETL Report Validation T+6" /XML "D:\Test Script\scripts\etl_report_task.xml" /F
+
+  Runs DAILY at 06:00; the script self-guards to only execute on quarter-end + 6
+  days. Adjust the <Command>/<WorkingDirectory> paths below if the repo is not at
+  D:\Test Script. To change the run time, edit <StartBoundary> (the HH:MM:SS part).
+-->
+<Task version="1.2" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">
+  <RegistrationInfo>
+    <Description>Runs the GVC/MD&amp;A report-validation suites at T+6 post quarter-end. The daily trigger is intentional; scheduled_report_run.py only runs on the target date.</Description>
+    <URI>\ETL Report Validation T+6</URI>
+  </RegistrationInfo>
+  <Triggers>
+    <CalendarTrigger>
+      <StartBoundary>2026-01-01T06:00:00</StartBoundary>
+      <Enabled>true</Enabled>
+      <ScheduleByDay>
+        <DaysInterval>1</DaysInterval>
+      </ScheduleByDay>
+    </CalendarTrigger>
+  </Triggers>
+  <Principals>
+    <Principal id="Author">
+      <LogonType>InteractiveToken</LogonType>
+      <RunLevel>LeastPrivilege</RunLevel>
+    </Principal>
+  </Principals>
+  <Settings>
+    <MultipleInstancesPolicy>IgnoreNew</MultipleInstancesPolicy>
+    <DisallowStartIfOnBatteries>false</DisallowStartIfOnBatteries>
+    <StopIfGoingOnBatteries>false</StopIfGoingOnBatteries>
+    <AllowHardTerminate>true</AllowHardTerminate>
+    <StartWhenAvailable>true</StartWhenAvailable>
+    <RunOnlyIfNetworkAvailable>false</RunOnlyIfNetworkAvailable>
+    <IdleSettings>
+      <StopOnIdleEnd>false</StopOnIdleEnd>
+      <RestartOnIdle>false</RestartOnIdle>
+    </IdleSettings>
+    <AllowStartOnDemand>true</AllowStartOnDemand>
+    <Enabled>true</Enabled>
+    <Hidden>false</Hidden>
+    <ExecutionTimeLimit>PT2H</ExecutionTimeLimit>
+    <Priority>7</Priority>
+  </Settings>
+  <Actions Context="Author">
+    <Exec>
+      <Command>D:\Test Script\.venv\Scripts\python.exe</Command>
+      <Arguments>"D:\Test Script\scripts\scheduled_report_run.py"</Arguments>
+      <WorkingDirectory>D:\Test Script</WorkingDirectory>
+    </Exec>
+  </Actions>
+</Task>
