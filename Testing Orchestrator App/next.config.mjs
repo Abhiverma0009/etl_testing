@@ -13,6 +13,19 @@ const nextConfig = {
     // the native binary as normal. See Testing Orchestrator App/TOOLING.md.
     useWasmBinary: true,
   },
+  webpack: (config, { dev }) => {
+    if (dev) {
+      // Webpack's default dev cache (PackFileCacheStrategy) gzip-serializes large
+      // packs to .next/cache on disk. On this OneDrive-synced, AV/DLP-scanned VM
+      // that buffer allocation fails ("RangeError: Array buffer allocation
+      // failed") and crashes the dev server via an unhandledRejection. Use the
+      // in-memory cache instead: no disk serialization, and there's ample RAM.
+      config.cache = { type: "memory" };
+    }
+    return config;
+  },
 };
-
+ 
 export default nextConfig;
+ 
+ 
