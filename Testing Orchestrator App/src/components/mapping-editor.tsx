@@ -142,10 +142,15 @@ export function MappingEditor({ name, book: initial }: { name: string; book: Map
                   {t.target_table}
                   {t.layer && <Badge variant="secondary">{t.layer}</Badge>}
                   <Badge variant="outline">{t.load_type ?? "full"}</Badge>
+                  {(t.target_object_type ?? "table") === "view" && (
+                    <Badge variant="secondary">target: view</Badge>
+                  )}
                   {t.active === false && <Badge variant="outline">inactive</Badge>}
                 </CardTitle>
                 <p className="text-xs text-muted-foreground">
-                  source: {t.source_object ?? "—"} · keys: {(t.key_columns ?? []).join(", ") || "—"}
+                  source: {t.source_object ?? "—"} ({t.source_object_type ?? "table"}) · target:{" "}
+                  {t.target_table} ({t.target_object_type ?? "table"}) · keys:{" "}
+                  {(t.key_columns ?? []).join(", ") || "—"}
                 </p>
               </CardHeader>
               <CardContent>

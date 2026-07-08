@@ -355,6 +355,11 @@ and its evidence drill-downs.
 - `historical`, `incremental`, `cross_source` need extra config (a baseline
   snapshot or second source) and SKIP cleanly with a clear message when it's
   absent.
+- **A data source (or target) may be a table or a view** — every connector reads via
+  `SELECT ... FROM <name>`, which is identical for both in Snowflake/SQL Server/Access,
+  so a view is referenced by name exactly like a table. A mapping row can record which
+  side is a view via `source_object_type` / `target_object_type` (`table` | `view`,
+  default `table`) — descriptive metadata for audit clarity; it doesn't change reads.
 - Report tab SQL and some mapping column/table names are seeded from the
   requirements documentation; confirm them against the live Snowflake objects
   before a real run.

@@ -57,6 +57,12 @@ class TableMapping:
     target_schema: str | None = None
     layer: str | None = None             # bronze/silver/gold
     load_type: str = "full"              # full | incremental
+    # Whether each side's object is a physical TABLE or a VIEW. Purely
+    # descriptive for reads (the engine queries `SELECT ... FROM <name>` either
+    # way), but audit-relevant: a view can't structurally drift on its own,
+    # a table can. Accepts "table" | "view"; defaults to "table".
+    source_object_type: str = "table"
+    target_object_type: str = "table"
     key_columns: list[str] = field(default_factory=list)
     active: bool = True
     columns: list[ColumnMapping] = field(default_factory=list)
@@ -143,4 +149,14 @@ class MappingBook:
                     f"Table '{t.target_table}' has no key_columns; row-level comparison "
                     f"and reconciliation for it will be limited to count/aggregate checks."
                 )
+            # Normalize object types to "table" | "view" (default table on anything else).
+            for side in ("source_object_type", "target_object_type"):
+                val = str(getattr(t, side) or "table").strip().lower()
+                if val not in ("table", "view"):
+                    self.warnings.append(
+                        f"Table '{t.target_table}' has {side}={val!r}; expected "
+                        f"'table' or 'view'. Treating it as 'table'."
+                    )
+                    val = "table"
+                setattr(t, side, val)
         return self

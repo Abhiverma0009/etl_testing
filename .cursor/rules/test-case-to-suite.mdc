@@ -254,6 +254,11 @@ tables:
   match a `target_table` in the referenced mapping; columns must exist on it. If a
   test case names something not in the mapping, flag it as a gap — don't emit a
   check that will error.
+- **A source or target object may be a table OR a view** — both are read identically
+  (`SELECT ... FROM <name>`), so a view is referenced by its name just like a table.
+  When a mapping row's object is a view, set `source_object_type` / `target_object_type`
+  to `"view"` on that Tables row (default `"table"`) — descriptive only, doesn't change
+  reads.
 - **Never fabricate SQL** for report tabs (leave `-- TODO`, flag it).
 - **Severity**: map P1=showstopper/critical, P2=critical, P3=major, P4=medium.
   Default to the test case's stated priority; if none, P3 (P1 for reconciliation

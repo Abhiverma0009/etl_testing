@@ -149,6 +149,8 @@ export interface MappingTable {
   target_schema?: string | null;
   layer?: string | null;
   load_type?: string;
+  source_object_type?: string; // "table" | "view" — descriptive; engine reads both identically
+  target_object_type?: string; // "table" | "view"
   key_columns?: string[];
   active?: boolean;
   columns?: MappingColumn[];

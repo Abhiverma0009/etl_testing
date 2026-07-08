@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { categoryLabel } from "@/lib/categories";
 import { fixTips } from "@/lib/remediation";
@@ -39,10 +39,106 @@ const PILL: Record<string, { c: string; bg: string }> = {
 };
 const ORDER: Record<string, number> = { FAIL: 0, ERROR: 1, WARN: 2, PASS: 3, SKIPPED: 4 };
 
-function fmtMetrics(m: Record<string, unknown>): string {
-  return Object.entries(m)
-    .map(([k, v]) => `${k}: ${v && typeof v === "object" ? JSON.stringify(v) : v}`)
-    .join("\n");
+// --- Metrics rendering -------------------------------------------------------
+// Validator metrics are heterogeneous: scalars, string lists (e.g. missing
+// columns), key→count maps (e.g. null_counts), and lists of per-row objects
+// (e.g. null_handling column breakdown). Render each shape as readable text
+// instead of raw JSON / arrays.
+function humanizeKey(k: string): string {
+  const s = k.replace(/_/g, " ").trim();
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+function fmtScalar(v: unknown): string {
+  if (v === null || v === undefined || v === "") return "—";
+  if (typeof v === "boolean") return v ? "Yes" : "No";
+  if (typeof v === "number") {
+    if (!Number.isFinite(v)) return String(v);
+    if (Number.isInteger(v)) return v.toLocaleString();
+    const abs = Math.abs(v);
+    if (abs !== 0 && abs < 0.0001) return v.toExponential(2);
+    return String(parseFloat(v.toFixed(6)));
+  }
+  return String(v);
+}
+
+const isPrimitive = (v: unknown): boolean => v === null || typeof v !== "object";
+
+function Chip({ children }: { children: ReactNode }) {
+  return (
+    <span className="inline-block rounded bg-[#eef1f5] px-1.5 py-0.5 font-mono text-[11px] text-[#475467]">
+      {children}
+    </span>
+  );
+}
+
+function MetricValue({ value }: { value: unknown }) {
+  if (value === null || value === undefined || value === "")
+    return <span className="text-[#98a2b3]">—</span>;
+
+  if (typeof value === "number" || typeof value === "boolean" || typeof value === "string")
+    return <span className="tabular-nums">{fmtScalar(value)}</span>;
+
+  if (Array.isArray(value)) {
+    if (value.length === 0) return <span className="text-[#98a2b3]">none</span>;
+    // list of column names / primitives → chips
+    if (value.every(isPrimitive))
+      return (
+        <div className="flex flex-wrap gap-1">
+          {value.map((x, i) => (
+            <Chip key={i}>{String(x)}</Chip>
+          ))}
+        </div>
+      );
+    // list of per-row objects → one compact "k: v · k: v" line each
+    return (
+      <div className="space-y-1">
+        {value.map((row, i) => (
+          <div key={i} className="flex flex-wrap gap-x-3 gap-y-0.5 text-[11.5px]">
+            {Object.entries(row as Record<string, unknown>).map(([sk, sv]) => (
+              <span key={sk}>
+                <span className="text-[#98a2b3]">{humanizeKey(sk)}:</span>{" "}
+                <span className="tabular-nums text-[#344054]">{fmtScalar(sv)}</span>
+              </span>
+            ))}
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  // plain object (key → scalar map, e.g. null_counts) → labelled chips
+  const entries = Object.entries(value as Record<string, unknown>);
+  if (entries.length === 0) return <span className="text-[#98a2b3]">none</span>;
+  return (
+    <div className="flex flex-wrap gap-1">
+      {entries.map(([sk, sv]) => (
+        <Chip key={sk}>
+          <span className="text-[#98a2b3]">{sk}</span>{" "}
+          <span className="tabular-nums text-[#344054]">{fmtScalar(sv)}</span>
+        </Chip>
+      ))}
+    </div>
+  );
+}
+
+function MetricsView({ metrics }: { metrics: Record<string, unknown> }) {
+  const entries = Object.entries(metrics ?? {}).filter(([, v]) => v !== undefined);
+  if (entries.length === 0) return <span className="text-[#98a2b3]">—</span>;
+  return (
+    <div className="space-y-2">
+      {entries.map(([k, v]) => (
+        <div key={k} className="flex flex-col gap-0.5 sm:flex-row sm:gap-3">
+          <div className="w-48 shrink-0 text-[11.5px] font-medium text-[#667085]">
+            {humanizeKey(k)}
+          </div>
+          <div className="min-w-0 flex-1 text-[12px] leading-[1.6] text-[#344054]">
+            <MetricValue value={v} />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
 }
 
 export function CommandCenter({
@@ -355,10 +451,8 @@ export function CommandCenter({
                     </div>
                   )}
                   <div className="rounded-lg border border-[#e6e8ee] bg-[#f7f8fa] px-4 py-3">
-                    <div className="text-[11px] font-bold tracking-[.05em] text-[#667085]">METRICS</div>
-                    <div className="mt-1.5 whitespace-pre-wrap font-mono text-[11.5px] leading-[1.7] text-[#344054]">
-                      {fmtMetrics(chk.metrics) || "—"}
-                    </div>
+                    <div className="mb-2 text-[11px] font-bold tracking-[.05em] text-[#667085]">METRICS</div>
+                    <MetricsView metrics={chk.metrics} />
                   </div>
                 </div>
               )}

@@ -1,20 +1,33 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import Link from "next/link";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Nav } from "@/components/nav";
 import { Toaster } from "@/components/ui/sonner";
 
-const sans = IBM_Plex_Sans({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+// Self-hosted IBM Plex fonts (files committed under ./fonts). Using
+// next/font/local instead of next/font/google so the app builds and runs on a
+// locked-down VM with no internet — next/font/google fetches from Google Fonts
+// at build/dev time, which fails offline. Weights match the prior google setup.
+const sans = localFont({
+  src: [
+    { path: "./fonts/ibm-plex-sans-400.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/ibm-plex-sans-500.woff2", weight: "500", style: "normal" },
+    { path: "./fonts/ibm-plex-sans-600.woff2", weight: "600", style: "normal" },
+    { path: "./fonts/ibm-plex-sans-700.woff2", weight: "700", style: "normal" },
+  ],
   variable: "--font-sans",
+  display: "swap",
 });
-const mono = IBM_Plex_Mono({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
+const mono = localFont({
+  src: [
+    { path: "./fonts/ibm-plex-mono-400.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/ibm-plex-mono-500.woff2", weight: "500", style: "normal" },
+    { path: "./fonts/ibm-plex-mono-600.woff2", weight: "600", style: "normal" },
+  ],
   variable: "--font-mono",
+  display: "swap",
 });
 
 export const metadata: Metadata = {

@@ -23,7 +23,9 @@ def _tables() -> pd.DataFrame:
     return pd.DataFrame([{
         "source_system": "EXAMPLE (delete this row)",
         "source_object": "SRC_TABLE_OR_VIEW",
+        "source_object_type": "table",   # table | view  (source side is a table or a view)
         "target_table": "TARGET_TABLE",
+        "target_object_type": "table",   # table | view  (target side is a table or a view)
         "target_db": "", "target_schema": "", "layer": "gold",
         "load_type": "full", "key_columns": "KEY_COL_1, KEY_COL_2", "active": "yes",
     }])
