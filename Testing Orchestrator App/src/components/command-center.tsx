@@ -66,7 +66,7 @@ const isPrimitive = (v: unknown): boolean => v === null || typeof v !== "object"
 
 function Chip({ children }: { children: ReactNode }) {
   return (
-    <span className="inline-block rounded bg-[#eef1f5] px-1.5 py-0.5 font-mono text-[11px] text-[#475467]">
+    <span className="inline-block max-w-full whitespace-normal break-words rounded bg-[#eef1f5] px-1.5 py-0.5 font-mono text-[11px] text-[#475467]">
       {children}
     </span>
   );
@@ -128,11 +128,11 @@ function MetricsView({ metrics }: { metrics: Record<string, unknown> }) {
   return (
     <div className="space-y-2">
       {entries.map(([k, v]) => (
-        <div key={k} className="flex flex-col gap-0.5 sm:flex-row sm:gap-3">
-          <div className="w-48 shrink-0 text-[11.5px] font-medium text-[#667085]">
+        <div key={k} className="flex flex-col gap-1">
+          <div className="text-[11.5px] font-medium text-[#667085]">
             {humanizeKey(k)}
           </div>
-          <div className="min-w-0 flex-1 text-[12px] leading-[1.6] text-[#344054]">
+          <div className="min-w-0 text-[12px] leading-[1.6] text-[#344054]">
             <MetricValue value={v} />
           </div>
         </div>
@@ -430,7 +430,7 @@ export function CommandCenter({
               </button>
 
               {isOpen && (
-                <div className="grid grid-cols-[1fr_280px] gap-3 px-[18px] pb-4">
+                <div className="grid grid-cols-1 gap-3 px-[18px] pb-4 lg:grid-cols-[1fr_360px]">
                   {hasFix ? (
                     <div className="rounded-lg border border-[#efe3c2] bg-[#fbf7ec] px-4 py-3">
                       <div className="text-[11px] font-bold tracking-[.05em] text-[#8a6c1f]">POINTS TO FIX</div>
