@@ -222,6 +222,12 @@ export function CommandCenter({
           >
             All runs
           </Link>
+          <a
+            href={`/api/report/pdf?member=${encodeURIComponent(member)}&runId=${encodeURIComponent(run.run_id)}`}
+            className="rounded-[7px] border border-[#d0d5dd] bg-white px-3.5 py-[7px] text-[12px] font-semibold text-[#344054] hover:bg-[#f7f8fa]"
+          >
+            Download PDF
+          </a>
           <Link
             href="/runs/new"
             className="rounded-[7px] bg-[#2a5fdb] px-3.5 py-[7px] text-[12px] font-semibold text-white hover:bg-[#2250bd]"
