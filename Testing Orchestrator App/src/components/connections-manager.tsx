@@ -39,7 +39,13 @@ const FIELDS: Record<ConnectionType, Field[]> = {
   snowflake: [
     { key: "account", label: "Account", placeholder: "org-account.region" },
     { key: "user", label: "User", hint: "literal or ${ENV_VAR}" },
-    { key: "password", label: "Password", hint: "use ${ENV_VAR} — never a real secret" },
+    {
+      key: "authenticator",
+      label: "Authenticator",
+      placeholder: "externalbrowser",
+      hint: "SSO login? use 'externalbrowser' and leave Password blank",
+    },
+    { key: "password", label: "Password", hint: "leave blank for SSO; else use ${ENV_VAR} — never a real secret" },
     { key: "role", label: "Role" },
     { key: "warehouse", label: "Warehouse" },
     { key: "database", label: "Database" },

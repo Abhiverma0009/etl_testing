@@ -64,15 +64,28 @@ class SnowflakeConnector(Connector):
                 f"[{self.name}] Snowflake requires at least 'account' and 'user'."
             )
 
+        # Auth precedence: explicit authenticator (SSO/OAuth) > key-pair > password.
+        authenticator = cfg.get("authenticator")
         key_path = cfg.get("private_key_path")
-        if key_path:
+        if authenticator:
+            params["authenticator"] = authenticator
+            # External-browser SSO is interactive; cache the token so a browser
+            # prompt isn't triggered on every single connection.
+            if str(authenticator).lower() == "externalbrowser":
+                params["client_store_temporary_credential"] = True
+            # OAuth / programmatic access-token flows pass a token instead of a password.
+            token = cfg.get("token")
+            if token:
+                params["token"] = token
+        elif key_path:
             params["private_key"] = self._load_private_key(key_path,
                                                            cfg.get("private_key_passphrase"))
         else:
             pwd = cfg.get("password")
             if not pwd:
                 raise ConnectorError(
-                    f"[{self.name}] Snowflake needs a 'password' or 'private_key_path'."
+                    f"[{self.name}] Snowflake needs a 'password', 'private_key_path', "
+                    "or 'authenticator' (use 'externalbrowser' for SSO)."
                 )
             params["password"] = pwd
 

@@ -23,7 +23,9 @@ dependencies = [
 
 [project.optional-dependencies]
 connectors = [
-    "snowflake-connector-python>=3.7",
+    # secure-local-storage: caches the SSO/OAuth token on disk so external-browser
+    # (SSO) auth doesn't trigger a browser prompt on every connection.
+    "snowflake-connector-python[secure-local-storage]>=3.7",
     "pyarrow>=14.0",
 ]
 dev = ["pytest>=8.0"]

@@ -156,10 +156,17 @@ never touch a terminal for a normal test run.
 
 ### One-time setup
 
+Prerequisites (once per machine): **Python 3.11+** and **Node.js LTS** installed
+(so `python` and `node` are on `PATH`), plus the **MS Access ODBC driver** if you
+use Access sources.
+
 ```powershell
-# Python engine (dedicated venv used by both the CLI and the app)
+# Python engine + connectors (dedicated venv used by both the CLI and the app).
+# The [connectors] extra pulls in snowflake-connector-python[secure-local-storage]
+# (Snowflake + SSO token caching) and pyarrow. Calling python.exe directly means
+# no Activate.ps1 — handy on locked-down VMs where script execution is blocked.
 python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -e .
+.\.venv\Scripts\python.exe -m pip install -e ".[connectors]"
 
 # Credentials — never in YAML/JSON, only in .env (git-ignored)
 copy .env.example .env      # then fill SNOWFLAKE_*, ACCESS_DB_PATH, feed dirs
@@ -167,15 +174,29 @@ copy .env.example .env      # then fill SNOWFLAKE_*, ACCESS_DB_PATH, feed dirs
 
 # Web app (node-direct — no npm/npx .cmd shims; works on the restricted VM)
 cd "Testing Orchestrator App"
-node scripts\install.js     # install deps
+copy .env.local.example .env.local   # then set REPO_ROOT + PYTHON_EXE to YOUR paths
+node scripts\install.js     # installs React + all app deps (this IS `npm install`, node-direct)
 node server.js              # dev server on http://localhost:3000
 #   node scripts\build.js && set NODE_ENV=production && node server.js   # prod
 ```
+
+`.env.local` lives **inside** `Testing Orchestrator App/` (not the repo root) and
+holds no secrets — just per-machine paths. `REPO_ROOT` is this repo's folder and
+`PYTHON_EXE` is `<REPO_ROOT>\.venv\Scripts\python.exe`; each teammate sets their
+own. `node scripts\install.js` already runs `npm install` the node-direct way, so
+there's no separate `npm install` step (that would go through the blocked
+`npm.cmd` shim).
 
 Drivers: the **MS Access ODBC driver** is required for Access sources; Snowflake
 uses its own Python connector; SQL Server needs an ODBC driver. Full app-specific
 detail (page-by-page, node-direct tooling rationale) lives in
 [`Testing Orchestrator App/README.md`](Testing%20Orchestrator%20App/README.md).
+
+**Snowflake SSO:** for external-browser SSO, set the connection's **Authenticator**
+to `externalbrowser` (Connections page, or `authenticator: externalbrowser` in
+`connections.yaml`) and leave Password blank. The `[secure-local-storage]` extra
+installed above caches the SSO token so the browser prompt doesn't reappear on
+every connection.
 
 ### Walkthroughs
 

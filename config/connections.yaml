@@ -28,6 +28,9 @@ connections:
     type: snowflake
     account: ${SNOWFLAKE_ACCOUNT}
     user: ${SNOWFLAKE_USER}
+    # SSO via external browser (default). Set SNOWFLAKE_AUTHENTICATOR= (empty) in
+    # .env to fall back to password auth using SNOWFLAKE_PASSWORD instead.
+    authenticator: ${SNOWFLAKE_AUTHENTICATOR:-externalbrowser}
     password: ${SNOWFLAKE_PASSWORD}
     role: ${SNOWFLAKE_ROLE}
     warehouse: ${SNOWFLAKE_WAREHOUSE}
@@ -38,6 +41,9 @@ connections:
     type: snowflake
     account: ${SNOWFLAKE_ACCOUNT}
     user: ${SNOWFLAKE_USER}
+    # SSO via external browser (default). Set SNOWFLAKE_AUTHENTICATOR= (empty) in
+    # .env to fall back to password auth using SNOWFLAKE_PASSWORD instead.
+    authenticator: ${SNOWFLAKE_AUTHENTICATOR:-externalbrowser}
     password: ${SNOWFLAKE_PASSWORD}
     role: ${SNOWFLAKE_ROLE}
     warehouse: ${SNOWFLAKE_WAREHOUSE}
@@ -48,6 +54,9 @@ connections:
     type: snowflake
     account: ${SNOWFLAKE_ACCOUNT}
     user: ${SNOWFLAKE_USER}
+    # SSO via external browser (default). Set SNOWFLAKE_AUTHENTICATOR= (empty) in
+    # .env to fall back to password auth using SNOWFLAKE_PASSWORD instead.
+    authenticator: ${SNOWFLAKE_AUTHENTICATOR:-externalbrowser}
     password: ${SNOWFLAKE_PASSWORD}
     role: ${SNOWFLAKE_ROLE}
     warehouse: ${SNOWFLAKE_WAREHOUSE}
@@ -58,6 +67,9 @@ connections:
     type: snowflake
     account: ${SNOWFLAKE_ACCOUNT}
     user: ${SNOWFLAKE_USER}
+    # SSO via external browser (default). Set SNOWFLAKE_AUTHENTICATOR= (empty) in
+    # .env to fall back to password auth using SNOWFLAKE_PASSWORD instead.
+    authenticator: ${SNOWFLAKE_AUTHENTICATOR:-externalbrowser}
     password: ${SNOWFLAKE_PASSWORD}
     role: ${SNOWFLAKE_ROLE}
     warehouse: ${SNOWFLAKE_WAREHOUSE}
@@ -68,6 +80,9 @@ connections:
     type: snowflake
     account: ${SNOWFLAKE_ACCOUNT}
     user: ${SNOWFLAKE_USER}
+    # SSO via external browser (default). Set SNOWFLAKE_AUTHENTICATOR= (empty) in
+    # .env to fall back to password auth using SNOWFLAKE_PASSWORD instead.
+    authenticator: ${SNOWFLAKE_AUTHENTICATOR:-externalbrowser}
     password: ${SNOWFLAKE_PASSWORD}
     role: ${SNOWFLAKE_ROLE}
     warehouse: ${SNOWFLAKE_WAREHOUSE}
@@ -80,6 +95,9 @@ connections:
     type: snowflake
     account: ${SNOWFLAKE_ACCOUNT}
     user: ${SNOWFLAKE_USER}
+    # SSO via external browser (default). Set SNOWFLAKE_AUTHENTICATOR= (empty) in
+    # .env to fall back to password auth using SNOWFLAKE_PASSWORD instead.
+    authenticator: ${SNOWFLAKE_AUTHENTICATOR:-externalbrowser}
     password: ${SNOWFLAKE_PASSWORD}
     role: ${SNOWFLAKE_ROLE}
     warehouse: ${SNOWFLAKE_WAREHOUSE}
@@ -91,6 +109,9 @@ connections:
     type: snowflake
     account: ${SNOWFLAKE_ACCOUNT}
     user: ${SNOWFLAKE_USER}
+    # SSO via external browser (default). Set SNOWFLAKE_AUTHENTICATOR= (empty) in
+    # .env to fall back to password auth using SNOWFLAKE_PASSWORD instead.
+    authenticator: ${SNOWFLAKE_AUTHENTICATOR:-externalbrowser}
     password: ${SNOWFLAKE_PASSWORD}
     role: ${SNOWFLAKE_ROLE}
     warehouse: ${SNOWFLAKE_WAREHOUSE}
@@ -101,6 +122,9 @@ connections:
     type: snowflake
     account: ${SNOWFLAKE_ACCOUNT}
     user: ${SNOWFLAKE_USER}
+    # SSO via external browser (default). Set SNOWFLAKE_AUTHENTICATOR= (empty) in
+    # .env to fall back to password auth using SNOWFLAKE_PASSWORD instead.
+    authenticator: ${SNOWFLAKE_AUTHENTICATOR:-externalbrowser}
     password: ${SNOWFLAKE_PASSWORD}
     role: ${SNOWFLAKE_ROLE}
     warehouse: ${SNOWFLAKE_WAREHOUSE}
