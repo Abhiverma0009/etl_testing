@@ -41,7 +41,7 @@ function flattenMetrics(metrics: Record<string, unknown>): string[] {
   return Object.entries(metrics ?? {})
     .filter(([, v]) => v !== undefined && v !== null)
     .map(([k, v]) => {
-      const label = k.replace(/_/g, " ");
+      const label = k.replace(/_/g, " ").toUpperCase();
       if (Array.isArray(v)) return `${label}: ${v.map((x) => fmtMetric(x)).join(", ")}`;
       if (typeof v === "object") return `${label}: ${fmtMetric(v)}`;
       return `${label}: ${fmtMetric(v)}`;
