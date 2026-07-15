@@ -111,9 +111,17 @@ function RunReportDocument({ run, analytics, member }: { run: RunResult; analyti
             <Text style={styles.metaLabel}>Overall result</Text>
             <Text style={[styles.metaValue, { color: run.passed ? "#12b76a" : "#f04438" }]}>
               {run.passed ? "PASSED" : "FAILED"}
+              {String(run.expected).toLowerCase() === "fail" ? " (negative)" : ""}
             </Text>
           </View>
         </View>
+
+        {String(run.expected).toLowerCase() === "fail" && (
+          <Text style={{ fontSize: 8.5, color: "#475467", marginBottom: 10 }}>
+            Negative test case (expected to fail): it passes only when a check detects a failure. The
+            failing checks listed below are the intended detection, not defects in the migration.
+          </Text>
+        )}
 
         <View style={styles.kpiRow}>
           {(["PASS", "WARN", "FAIL", "ERROR", "SKIPPED"] as const).map((s) => (

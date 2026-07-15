@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { listMappingNames, getMapping } from "@/lib/configStore";
 import { PageHeader } from "@/components/page-header";
+import { MappingUpload } from "@/components/mapping-upload";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChevronRight } from "lucide-react";
 
@@ -17,6 +18,7 @@ export default async function MappingsPage() {
       <PageHeader
         title="Mappings"
         description="Source-to-target mapping books (imported from Excel, edited here as JSON)."
+        actions={<MappingUpload />}
       />
       <div className="grid gap-3 p-6 sm:grid-cols-2 lg:grid-cols-3">
         {books.map(({ name, book }) => (
@@ -38,8 +40,9 @@ export default async function MappingsPage() {
         ))}
         {books.length === 0 && (
           <div className="col-span-full rounded-lg border border-dashed p-12 text-center text-sm text-muted-foreground">
-            No mapping books. Generate them with{" "}
-            <code>etl-test export-mapping &lt;workbook.xlsx&gt;</code>.
+            No mapping books yet. Use{" "}
+            <span className="font-medium text-foreground">Import mapping (.xlsx)</span>{" "}
+            above to add one from an Excel workbook.
           </div>
         )}
       </div>

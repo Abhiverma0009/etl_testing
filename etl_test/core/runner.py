@@ -63,6 +63,7 @@ def run_validation(
     options: dict[str, Any],
     output_dir: Path,
     suite_name: str | None = None,
+    expected: str = "pass",
 ) -> tuple[TestRunResult, Path]:
     from ..validators import VALIDATORS  # late import to avoid cycles
 
@@ -75,6 +76,7 @@ def run_validation(
     run = TestRunResult(
         run_id=run_id, started_at=utcnow_iso(), suite=suite_name,
         source=source_name, target=target_name, mapping_file=mapping.source_file,
+        expected=expected,
         meta={"categories": categories, "tables": table_names or "ALL",
               "mapping_warnings": mapping.warnings},
     )

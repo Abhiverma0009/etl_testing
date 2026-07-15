@@ -131,6 +131,10 @@ class TestRunResult:
     finished_at: str | None = None
     host: str = field(default_factory=platform.node)
     meta: dict[str, Any] = field(default_factory=dict)
+    # "pass" (default) or "fail". A negative/expected-fail test case proves that
+    # a validation *detects* seeded bad data: it passes when it finds a FAIL and
+    # fails when everything comes back clean (detection didn't fire).
+    expected: str = "pass"
 
     # --- aggregates ---------------------------------------------------------------
     def add(self, check: CheckResult) -> CheckResult:
@@ -145,16 +149,29 @@ class TestRunResult:
         return c
 
     @property
+    def is_negative(self) -> bool:
+        return str(self.expected).strip().lower() in ("fail", "negative", "neg", "true", "1", "yes")
+
+    @property
     def passed(self) -> bool:
-        """A run passes only if no FAIL and no ERROR checks exist."""
-        return not any(
-            chk.status in (Status.FAIL, Status.ERROR) for chk in self.checks
-        )
+        """Normal run: passes only if no FAIL and no ERROR. Negative run: passes
+        only if it detected a FAIL (and nothing crashed)."""
+        has_fail = any(c.status == Status.FAIL for c in self.checks)
+        has_error = any(c.status == Status.ERROR for c in self.checks)
+        if self.is_negative:
+            return has_fail and not has_error
+        return not (has_fail or has_error)
 
     def exit_code(self) -> int:
-        if any(c.status == Status.ERROR for c in self.checks):
+        has_error = any(c.status == Status.ERROR for c in self.checks)
+        has_fail = any(c.status == Status.FAIL for c in self.checks)
+        if self.is_negative:
+            if has_error:
+                return 2  # a crash can't prove detection — inconclusive
+            return 0 if has_fail else 1  # detected -> pass; nothing found -> fail
+        if has_error:
             return 2
-        if any(c.status == Status.FAIL for c in self.checks):
+        if has_fail:
             return 1
         return 0
 
@@ -170,6 +187,7 @@ class TestRunResult:
             "mapping_file": self.mapping_file,
             "host": self.host,
             "meta": self.meta,
+            "expected": self.expected,
             "counts": self.counts(),
             "passed": self.passed,
             "checks": [c.to_dict() for c in self.checks],

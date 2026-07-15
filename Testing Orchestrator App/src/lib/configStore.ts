@@ -126,6 +126,40 @@ export async function listMappingNames(): Promise<string[]> {
   }
 }
 
+export interface MappingOption {
+  name: string;
+  path: string; // repo-relative path a suite's `mapping:` should point at
+}
+
+/** Every mapping (by name) with the best on-disk path to reference it. Prefers
+ * the live Excel workbook (`.xlsx`/`.xlsm`) so edits take effect immediately;
+ * falls back to the exported `.json`. Used to populate the suite editor's
+ * mapping picker with paths that actually exist and won't corrupt on save. */
+export async function listMappingOptions(): Promise<MappingOption[]> {
+  let files: string[] = [];
+  try {
+    files = await fs.readdir(MAPPINGS_DIR);
+  } catch (err: unknown) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") return [];
+    throw err;
+  }
+  const excelFile = new Map<string, string>(); // name -> actual excel filename
+  const jsonNames = new Set<string>();
+  for (const f of files) {
+    const mx = /^(.*)\.(xlsx|xlsm)$/i.exec(f);
+    if (mx) { excelFile.set(mx[1], f); continue; }
+    const mj = /^(.*)\.json$/i.exec(f);
+    if (mj) jsonNames.add(mj[1]);
+  }
+  const names = new Set<string>([...excelFile.keys(), ...jsonNames]);
+  return [...names].sort().map((name) => ({
+    name,
+    path: excelFile.has(name)
+      ? `config/mappings/${excelFile.get(name)}`
+      : `config/mappings/${name}.json`,
+  }));
+}
+
 export interface MappingColumn {
   target_table: string;
   target_column: string;

@@ -44,6 +44,7 @@ export interface RunResult {
   mapping_file?: string | null;
   host?: string;
   meta?: Record<string, unknown>;
+  expected?: string; // "pass" (default) or "fail" for a negative/detection test
   counts: Counts;
   passed: boolean;
   checks: CheckResult[];
@@ -93,6 +94,7 @@ export interface SuiteConfig {
   tables?: SuiteTableEntry[];
   reports?: string[]; // report ids (config/reports/<id>.json) run by the `report` category
   scenario?: string; // id of the test scenario this suite (test case) belongs to
+  expected?: string; // "fail" marks a negative test case (expected to detect a failure)
 }
 
 // ---- scenarios (a test scenario groups multiple suites = test cases) ----

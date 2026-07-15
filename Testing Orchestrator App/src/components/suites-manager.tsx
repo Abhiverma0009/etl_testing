@@ -46,6 +46,7 @@ interface Draft {
   scenario: string;
   tests: Set<string>;
   reports: Set<string>;
+  expected: boolean; // true = negative test case (expected to detect a failure)
   optionsText: string;
   tablesText: string;
   isNew: boolean;
@@ -61,7 +62,7 @@ export function SuitesManager({
 }: {
   suites: SuiteConfig[];
   connections: string[];
-  mappings: string[];
+  mappings: { name: string; path: string }[];
   categories: string[];
   reports: string[];
   scenarios: { id: string; name: string }[];
@@ -77,12 +78,13 @@ export function SuitesManager({
       name: "",
       source: NONE,
       target: connections[0] ?? "",
-      mapping: mappings[0] ?? "",
+      mapping: mappings[0]?.path ?? NONE,
       scenario: presetScenario && scenarios.some((s) => s.id === presetScenario)
         ? presetScenario
         : NONE,
       tests: new Set(),
       reports: new Set(),
+      expected: false,
       optionsText: "{\n  \"variance_threshold\": 0.0001\n}",
       tablesText: "[]",
       isNew: true,
@@ -107,10 +109,13 @@ export function SuitesManager({
       name: s.name,
       source: s.source ?? NONE,
       target: s.target ?? "",
-      mapping: (s.mapping ?? "").replace(/^config\/mappings\//, "").replace(/\.json$/, ""),
+      // Keep the exact stored path so it matches a picker option (which now
+      // carries the real .xlsx/.json path, not a bare name).
+      mapping: s.mapping ?? NONE,
       scenario: s.scenario ?? NONE,
       tests: new Set(s.tests ?? []),
       reports: new Set(s.reports ?? []),
+      expected: String(s.expected ?? "").toLowerCase() === "fail",
       optionsText: JSON.stringify(s.options ?? {}, null, 2),
       tablesText: JSON.stringify(s.tables ?? [], null, 2),
       isNew: false,
@@ -163,7 +168,7 @@ export function SuitesManager({
     const suite: SuiteConfig = {
       name: draft.name.trim(),
       connections: "config/connections.yaml",
-      mapping: draft.mapping ? `config/mappings/${draft.mapping}.json` : undefined,
+      mapping: draft.mapping && draft.mapping !== NONE ? draft.mapping : undefined,
       source: draft.source === NONE ? null : draft.source,
       target: draft.target,
       options,
@@ -171,6 +176,7 @@ export function SuitesManager({
       tables: tables as SuiteConfig["tables"],
       ...(reportsArr.length ? { reports: reportsArr } : {}),
       ...(draft.scenario !== NONE ? { scenario: draft.scenario } : {}),
+      ...(draft.expected ? { expected: "fail" } : {}),
     };
     startTransition(async () => {
       try {
@@ -215,7 +221,14 @@ export function SuitesManager({
           <TableBody>
             {suites.map((s) => (
               <TableRow key={s.name}>
-                <TableCell className="font-medium">{s.name}</TableCell>
+                <TableCell className="font-medium">
+                  {s.name}
+                  {String(s.expected ?? "").toLowerCase() === "fail" && (
+                    <span className="ml-2 rounded bg-[#fef3f2] px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[#b42318]">
+                      Negative
+                    </span>
+                  )}
+                </TableCell>
                 <TableCell className="text-sm text-muted-foreground">
                   {scenarioName(s.scenario) ?? "—"}
                 </TableCell>
@@ -310,13 +323,20 @@ export function SuitesManager({
                     <SelectValue placeholder="Select…" />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value={NONE}>(none — report-only suite)</SelectItem>
                     {mappings.map((m) => (
-                      <SelectItem key={m} value={m}>
-                        {m}
+                      <SelectItem key={m.path} value={m.path}>
+                        {m.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
+                {draft.mapping && draft.mapping !== NONE && !mappings.some((m) => m.path === draft.mapping) && (
+                  <p className="mt-1 text-xs text-status-warn">
+                    Current path <code className="font-mono">{draft.mapping}</code> isn&rsquo;t a known
+                    mapping file — pick one above or import it on the Mappings page.
+                  </p>
+                )}
               </div>
               <div>
                 <Label>Test scenario</Label>
@@ -347,6 +367,22 @@ export function SuitesManager({
                     </label>
                   ))}
                 </div>
+              </div>
+              <div className="rounded-md border p-3">
+                <label className="flex items-start gap-2 text-sm">
+                  <Checkbox
+                    checked={draft.expected}
+                    onCheckedChange={() => setDraft({ ...draft, expected: !draft.expected })}
+                    className="mt-0.5"
+                  />
+                  <span>
+                    <span className="font-medium">Negative test case</span> (expected to fail)
+                    <span className="mt-0.5 block text-xs text-muted-foreground">
+                      Verdict is inverted: this case passes only when a check{" "}
+                      <b>detects</b> a failure (e.g. seeded bad data), and fails if everything comes back clean.
+                    </span>
+                  </span>
+                </label>
               </div>
               {reports.length > 0 && (
                 <div>

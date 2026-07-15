@@ -237,6 +237,34 @@ export function CommandCenter({
         </div>
       </div>
 
+      {/* Negative (expected-fail) test case: the verdict is inverted — passing
+          means the check DETECTED the seeded issue. Explain that up front so the
+          FAIL counts below don't read as a real failure. */}
+      {String(run.expected).toLowerCase() === "fail" && (() => {
+        const detected = (c.FAIL ?? 0) > 0 && (c.ERROR ?? 0) === 0;
+        return (
+          <div
+            className="mt-4 flex items-center gap-2 rounded-[9px] border px-4 py-2.5 text-[12.5px]"
+            style={
+              detected
+                ? { borderColor: "#a6f4c5", background: "#ecfdf3", color: "#087443" }
+                : { borderColor: "#fecdca", background: "#fef3f2", color: "#b42318" }
+            }
+          >
+            <span className="rounded-[5px] bg-current/10 px-2 py-[3px] text-[11px] font-bold uppercase tracking-[.05em]">
+              Negative test
+            </span>
+            <span className="font-medium">
+              {detected
+                ? `Detected the expected issue (${c.FAIL} failing check${c.FAIL === 1 ? "" : "s"}) — PASS. Failing checks below are the intended detection.`
+                : (c.ERROR ?? 0) > 0
+                ? "A check errored, so detection couldn't be confirmed — treated as not passed."
+                : "Expected to catch a seeded issue, but everything passed — the bad data was NOT detected (FAIL)."}
+            </span>
+          </div>
+        );
+      })()}
+
       {/* KPI strip */}
       <div className="mt-5 grid grid-cols-[1.4fr_repeat(5,1fr)] gap-3">
         <div className="rounded-[10px] bg-[#101828] px-[18px] py-4 text-white">

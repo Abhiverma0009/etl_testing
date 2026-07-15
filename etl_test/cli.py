@@ -100,6 +100,29 @@ def export_mapping(xlsx_path: str, out_path: str | None) -> None:
     click.echo(f"Exported: {out}")
 
 
+@cli.command("import-suites")
+@click.argument("xlsx_path")
+@click.option("--suites-dir", default="config/suites", show_default=True)
+@click.option("--scenarios-path", default="config/scenarios.yaml", show_default=True)
+@click.option("--connections", "connections_path", default=DEFAULT_CONNECTIONS, show_default=True)
+@click.option("--mappings-dir", default="config/mappings", show_default=True)
+def import_suites_cmd(xlsx_path, suites_dir, scenarios_path, connections_path, mappings_dir) -> None:
+    """Import test cases (suites) + scenarios from an Excel workbook.
+
+    Writes one config/suites/<name>.yaml per test case and upserts scenarios
+    into scenarios.yaml. Prints a single JSON summary line on stdout (consumed
+    by the app's importer)."""
+    from .suite_import import import_suites
+    try:
+        summary = import_suites(
+            xlsx_path, suites_dir=suites_dir, scenarios_path=scenarios_path,
+            connections_path=connections_path, mappings_dir=mappings_dir)
+    except EtlTestError as exc:
+        click.secho(f"Import error: {exc}", fg="red", err=True)
+        sys.exit(2)
+    click.echo(json.dumps(summary))
+
+
 # --------------------------------------------------------------------------------
 def _merge_suite_table_options(mapping: MappingBook, suite: dict[str, Any]) -> list[str] | None:
     """Apply per-table options from the suite onto the mapping; return table names."""
@@ -156,16 +179,18 @@ def _inject_reports(suite: dict[str, Any], options: dict[str, Any],
 
 
 def _execute(connections, mapping, *, categories, target, source, table_names,
-             options, output_dir, suite_name) -> int:
+             options, output_dir, suite_name, expected: str = "pass") -> int:
     run, json_path = run_validation(
         connections=connections, mapping=mapping, categories=categories,
         target_name=target, source_name=source, table_names=table_names,
         options=options, output_dir=Path(output_dir), suite_name=suite_name,
+        expected=expected,
     )
     counts = run.counts()
     color = "green" if run.passed else "red"
+    neg = " (negative test)" if run.is_negative else ""
     click.secho(
-        f"\n{'PASS' if run.passed else 'FAIL'} — "
+        f"\n{'PASS' if run.passed else 'FAIL'}{neg} — "
         f"{counts['PASS']} pass / {counts['WARN']} warn / {counts['FAIL']} fail / "
         f"{counts['ERROR']} error / {counts['SKIPPED']} skipped",
         fg=color, bold=True)
@@ -204,7 +229,8 @@ def run_cmd(suite_path, connections_path, tests, tables, output_dir) -> None:
 
     code = _execute(connections, mapping, categories=categories, target=target,
                     source=source, table_names=table_names, options=options,
-                    output_dir=output_dir, suite_name=Path(suite_path).name)
+                    output_dir=output_dir, suite_name=Path(suite_path).name,
+                    expected=suite.get("expected", "pass"))
     sys.exit(code)
 
 
