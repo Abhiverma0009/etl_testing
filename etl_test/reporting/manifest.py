@@ -42,6 +42,11 @@ def build_manifest(output_dir: str | Path, max_runs: int = DEFAULT_MAX_RUNS) -> 
                 "target": data.get("target"),
                 "suite": data.get("suite"),
                 "category": data.get("category"),
+                # The categories this run actually executed. Indexed here so the
+                # app can tell a report run from a data run without opening every
+                # result.json. Populated for existing runs too — the manifest is
+                # rebuilt from scratch on every run.
+                "categories": (data.get("meta") or {}).get("categories") or [],
                 "path": rel,
             })
     entries.sort(key=lambda d: d.get("started_at") or "", reverse=True)

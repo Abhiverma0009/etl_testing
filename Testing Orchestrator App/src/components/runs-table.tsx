@@ -34,14 +34,37 @@ function CountsCell({ counts }: { counts: Partial<Record<string, number>> }) {
 
 type RunRow = ManifestEntry & { scenarioName?: string | null };
 
+const REPORT_CATEGORIES = new Set(["report", "gvc_report"]);
+
+/** Report runs (GVC / MD&A tab comparisons) vs data-migration runs. Driven by
+ * the categories the run actually executed, indexed in the manifest. */
+function isReportRun(r: RunRow): boolean {
+  if (r.categories?.length) return r.categories.some((c) => REPORT_CATEGORIES.has(c));
+  // Legacy fallback, name-based and therefore approximate: only for manifests
+  // written before `categories` was indexed (a member folder with no run since).
+  // Covers the one-click runner's ephemeral `report_<id>.yaml` and the standing
+  // gvc/mda report suites. Becomes exact — and this branch stops being used —
+  // as soon as any run rebuilds that member's manifest.
+  const stem = (r.suite ?? "").replace(/\.ya?ml$/, "");
+  return /^report_/.test(stem) || stem === "gvc" || stem === "mda";
+}
+
 export function RunsTable({ runs }: { runs: RunRow[] }) {
   const router = useRouter();
   const [q, setQ] = useState("");
   const [status, setStatus] = useState<"all" | "pass" | "fail">("all");
+  const [type, setType] = useState<"all" | "data" | "reports">("all");
+
+  const reportCount = useMemo(() => runs.filter(isReportRun).length, [runs]);
 
   const filtered = useMemo(() => {
     const query = q.trim().toLowerCase();
     return runs.filter((r) => {
+      if (type !== "all") {
+        const isReport = isReportRun(r);
+        if (type === "reports" && !isReport) return false;
+        if (type === "data" && isReport) return false;
+      }
       if (status === "pass" && !r.passed) return false;
       if (status === "fail" && r.passed) return false;
       if (!query) return true;
@@ -50,7 +73,7 @@ export function RunsTable({ runs }: { runs: RunRow[] }) {
         .toLowerCase()
         .includes(query);
     });
-  }, [runs, q, status]);
+  }, [runs, q, status, type]);
 
   return (
     <div className="space-y-3">
@@ -61,20 +84,50 @@ export function RunsTable({ runs }: { runs: RunRow[] }) {
           onChange={(e) => setQ(e.target.value)}
           className="h-9 max-w-xs"
         />
-        <div className="flex gap-1">
-          {(["all", "pass", "fail"] as const).map((s) => (
-            <button
-              key={s}
-              onClick={() => setStatus(s)}
-              className={`rounded-md border px-3 py-1.5 text-xs font-medium capitalize transition-colors ${
-                status === s
-                  ? "border-primary bg-primary/10 text-primary"
-                  : "text-muted-foreground hover:bg-muted"
-              }`}
-            >
-              {s}
-            </button>
-          ))}
+        {/* Two independent filters sit side by side, each with an "All" — label
+            them so the two Alls can't read as the same control. */}
+        <div className="flex items-center gap-1.5">
+          <span className="text-xs text-muted-foreground">Result</span>
+          <div className="flex gap-1">
+            {(["all", "pass", "fail"] as const).map((s) => (
+              <button
+                key={s}
+                onClick={() => setStatus(s)}
+                className={`rounded-md border px-3 py-1.5 text-xs font-medium capitalize transition-colors ${
+                  status === s
+                    ? "border-primary bg-primary/10 text-primary"
+                    : "text-muted-foreground hover:bg-muted"
+                }`}
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Report runs (GVC / MD&A) are rare next to nightly data regression —
+            let them be isolated in one click instead of hunting the list. */}
+        <div className="flex items-center gap-1.5 border-l pl-3">
+          <span className="text-xs text-muted-foreground">Type</span>
+          <div className="flex gap-1">
+            {([
+              { k: "all", label: "All" },
+              { k: "data", label: "Data" },
+              { k: "reports", label: `Reports${reportCount ? ` (${reportCount})` : ""}` },
+            ] as const).map(({ k, label }) => (
+              <button
+                key={k}
+                onClick={() => setType(k)}
+                className={`rounded-md border px-3 py-1.5 text-xs font-medium transition-colors ${
+                  type === k
+                    ? "border-primary bg-primary/10 text-primary"
+                    : "text-muted-foreground hover:bg-muted"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
         </div>
         <span className="ml-auto text-xs text-muted-foreground">
           {filtered.length} of {runs.length}

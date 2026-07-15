@@ -60,6 +60,7 @@ export interface ManifestEntry {
   target?: string | null;
   suite?: string | null;
   category?: string | null;
+  categories?: string[]; // test categories this run executed (from result.json meta)
   path: string; // e.g. "runs/<id>/result.json"
   member: string; // team member (folder) this run belongs to
   run_ref: string; // "<member>~<run_id>" — unambiguous id for /runs/[runId] links

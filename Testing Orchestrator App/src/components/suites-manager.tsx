@@ -7,6 +7,7 @@ import { Plus, Pencil, Trash2, Loader2 } from "lucide-react";
 import type { SuiteConfig } from "@/lib/types";
 import { categoryLabel } from "@/lib/categories";
 import { saveSuite, removeSuite } from "@/app/suites/actions";
+import { SuiteOptionsHelp, TableOptionsHelp } from "@/components/suite-options-help";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -406,19 +407,21 @@ export function SuitesManager({
               )}
               <div>
                 <Label>Options (JSON)</Label>
+                <SuiteOptionsHelp />
                 <Textarea
                   value={draft.optionsText}
                   onChange={(e) => setDraft({ ...draft, optionsText: e.target.value })}
-                  className="mt-1 font-mono text-xs"
+                  className="mt-1.5 font-mono text-xs"
                   rows={5}
                 />
               </div>
               <div>
                 <Label>Per-table options (JSON array)</Label>
+                <TableOptionsHelp />
                 <Textarea
                   value={draft.tablesText}
                   onChange={(e) => setDraft({ ...draft, tablesText: e.target.value })}
-                  className="mt-1 font-mono text-xs"
+                  className="mt-1.5 font-mono text-xs"
                   rows={6}
                 />
               </div>
