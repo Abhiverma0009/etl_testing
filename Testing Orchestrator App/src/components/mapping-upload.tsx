@@ -1,5 +1,5 @@
 "use client";
-
+ 
 import { useRef, useState, type ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -14,7 +14,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-
+ 
 // Required + optional columns per sheet, kept in sync with config/mappings/README.md.
 const SHEETS: { name: string; required: string; optional: string; purpose: string }[] = [
   {
@@ -42,12 +42,12 @@ const SHEETS: { name: string; required: string; optional: string; purpose: strin
     purpose: "One row per foreign-key relationship (optional sheet).",
   },
 ];
-
+ 
 export function MappingUpload() {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
-
+ 
   async function onFile(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     e.target.value = ""; // let the user re-pick the same filename later
@@ -69,7 +69,7 @@ export function MappingUpload() {
       setBusy(false);
     }
   }
-
+ 
   return (
     <div className="flex items-center gap-2">
       <FormatHelp />
@@ -91,7 +91,7 @@ export function MappingUpload() {
     </div>
   );
 }
-
+ 
 function FormatHelp() {
   return (
     <Dialog>
@@ -101,7 +101,7 @@ function FormatHelp() {
           Format
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="flex max-h-[85vh] flex-col sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>Mapping workbook format</DialogTitle>
           <DialogDescription>
@@ -110,7 +110,7 @@ function FormatHelp() {
             name becomes the mapping name in the app.
           </DialogDescription>
         </DialogHeader>
-        <div className="space-y-3 text-sm">
+        <div className="-mr-2 min-h-0 flex-1 space-y-3 overflow-y-auto pr-2 text-sm">
           {SHEETS.map((s) => (
             <div key={s.name} className="rounded-md border p-3">
               <div className="font-semibold">{s.name}</div>

@@ -4,15 +4,15 @@ import { PageHeader } from "@/components/page-header";
 import { MappingUpload } from "@/components/mapping-upload";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChevronRight } from "lucide-react";
-
+ 
 export const dynamic = "force-dynamic";
-
+ 
 export default async function MappingsPage() {
   const names = await listMappingNames();
   const books = await Promise.all(
     names.map(async (n) => ({ name: n, book: await getMapping(n) })),
   );
-
+ 
   return (
     <div>
       <PageHeader
@@ -25,9 +25,9 @@ export default async function MappingsPage() {
           <Link key={name} href={`/mappings/${name}`}>
             <Card className="transition-colors hover:border-primary">
               <CardHeader className="pb-2">
-                <CardTitle className="flex items-center justify-between text-base">
-                  {name}
-                  <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                <CardTitle className="flex items-start justify-between gap-2 text-base">
+                  <span className="min-w-0 break-words">{name}</span>
+                  <ChevronRight className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-sm text-muted-foreground">
